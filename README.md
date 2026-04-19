@@ -2,8 +2,10 @@
 # PROJECT NAME
 
 ## Contributors
-- PERSON
-- PERSON
+- Caroline Guerra
+- Mercy Muiruri
+- Austin Omondi
+- Chibueze Anyachebelu
 
 ## Dependencies
 - JDK 11
