@@ -19,30 +19,55 @@ enum GameStatus {
 }
 
 ' ── Model ────────────────────────────────────────────────
+
+' [Encapsulation] Fields private; callers use getType()/getName() only
 class Card {
   - type: CardType
   - name: String
+  + getType(): CardType
+  + getName(): String
 }
 
+' [Encapsulation] hand is private; Player manages its own hand internally.
+' eliminate() clears hand + sets flag in one place — not done by outside callers.
+' getHand() returns unmodifiable list so outside code cannot bypass addCard/removeCard.
 class Player {
   - id: String
   - name: String
   - hand: List<Card>
   - isEliminated: boolean
+  + getId(): String
+  + getName(): String
+  + isEliminated(): boolean
+  + getHand(): List<Card>
+  + getHandSize(): int
   + addCard(card: Card): void
   + removeCard(card: Card): void
   + hasCard(type: CardType): boolean
+  + getCardOfType(type: CardType): Card
+  + eliminate(): void
 }
 
+' [Encapsulation] cards list is private; all deck operations go through methods.
+' isEmpty() prevents callers from needing to call size() == 0 themselves.
 class Deck {
   - cards: List<Card>
+  + addCard(card: Card): void
   + shuffle(): void
   + drawTop(): Card
   + insertAt(card: Card, index: int): void
   + peekTop(n: int): List<Card>
   + size(): int
+  + isEmpty(): boolean
 }
 
+' [Encapsulation] All state fields are private. GameState controls how state
+' is read and changed — no field is accessible directly from outside.
+' addToDiscardPile() and getDiscardPile() wrap the discard list.
+' Setters only exist for fields that legitimately change during play.
+' [Information Hiding] getDeck() is removed — callers never get the Deck object.
+' GameState exposes only the specific deck operations the rest of the system needs.
+' If Deck is ever replaced internally, no outside class breaks.
 class GameState {
   - status: GameStatus
   - players: List<Player>
@@ -54,22 +79,152 @@ class GameState {
   - nopeCount: int
   - deck: Deck
   - discardPile: List<Card>
+  + getStatus(): GameStatus
+  + setStatus(status: GameStatus): void
+  + drawFromDeck(): Card
+  + getDeckSize(): int
+  + isDeckEmpty(): boolean
+  + peekTopOfDeck(n: int): List<Card>
+  + insertIntoDeck(card: Card, index: int): void
+  + shuffleDeck(): void
+  + getPlayers(): List<Player>
+  + getDiscardPile(): List<Card>
+  + addToDiscardPile(card: Card): void
   + getCurrentPlayer(): Player
   + getActivePlayers(): List<Player>
   + advancePlayer(): void
+  + getTurnsToTake(): int
+  + setTurnsToTake(n: int): void
+  + isSkipDraw(): boolean
+  + setSkipDraw(skip: boolean): void
+  + isAttacking(): boolean
+  + setAttacking(attacking: boolean): void
+  + getPendingAction(): Card
+  + setPendingAction(card: Card): void
+  + getNopeCount(): int
+  + incrementNopeCount(): void
+  + resetNopeCount(): void
 }
 
 ' ── Repository ───────────────────────────────────────────
+' [Program to Interface] GameController depends on IGameRepository, not the
+' concrete class. A file-based, database, or in-memory implementation
+' can be swapped in without touching GameController.
+interface IGameRepository {
+  + save(gameState: GameState): void
+  + load(): GameState
+}
+
 class GameRepository {
   + save(gameState: GameState): void
   + load(): GameState
 } // we might not need this for now
 
+GameRepository ..|> IGameRepository
+
+' ── Delegation + Information Hiding: DeckFactory ─────────
+' [Delegation] GameController delegates deck-building to DeckFactory.
+' [Information Hiding] Callers do not know card counts, card names,
+' or how exploding kittens are reinserted — buildDeck() hides all of it.
+class DeckFactory {
+  + buildDeck(numPlayers: int): Deck
+}
+
+' ── Encapsulate What Varies: CardAction ──────────────────
+' [Encapsulate What Varies] Each card type has different behavior when played.
+' That variation is isolated behind the CardAction interface.
+' Adding a new card type = adding one new class; nothing else changes.
+' [Composition Over Inheritance] No BaseCardAction superclass exists.
+' Shared logic between action classes is handled via composed helpers, not inheritance.
+interface CardAction {
+  + execute(gameState: GameState): void
+}
+
+class SkipAction {
+  + execute(gameState: GameState): void
+}
+
+class AttackAction {
+  + execute(gameState: GameState): void
+}
+
+class ShuffleAction {
+  + execute(gameState: GameState): void
+}
+
+class SeeFutureAction {
+  + execute(gameState: GameState): void
+}
+
+' [Composition Over Inheritance] FavorAction, TwoSameCardsAction, and
+' ThreeSameCatCardsAction all need to steal/request cards from another player.
+' Instead of a BaseStealAction they all extend, that shared logic lives in
+' PlayerInteractionHelper which each action composes (has-a).
+class PlayerInteractionHelper {
+  + stealRandomCard(from: Player, to: Player): void
+  + stealNamedCard(from: Player, to: Player, type: CardType): void
+}
+
+class FavorAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+class NopeAction {
+  + execute(gameState: GameState): void
+}
+
+class DefuseAction {
+  + execute(gameState: GameState): void
+}
+
+class TwoSameCardsAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+class ThreeSameCatCardsAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+SkipAction             ..|> CardAction
+AttackAction           ..|> CardAction
+ShuffleAction          ..|> CardAction
+SeeFutureAction        ..|> CardAction
+FavorAction            ..|> CardAction
+NopeAction             ..|> CardAction
+DefuseAction           ..|> CardAction
+TwoSameCardsAction     ..|> CardAction
+ThreeSameCatCardsAction ..|> CardAction
+
+' ── Delegation + Information Hiding: CardActionExecutor ───
+' [Delegation] GameController delegates card execution here.
+' [Information Hiding] The mapping of CardType → CardAction is hidden inside.
+' [Encapsulate What Varies] Holds a map of CardType → CardAction so the
+' routing logic is in one place and never leaks into GameController.
+class CardActionExecutor {
+  - actions: Map<CardType, CardAction>
+  + execute(card: Card, gameState: GameState): void
+}
+
 ' ── Controller ───────────────────────────────────────────
+' [Delegation] GameController does not build decks, execute card effects,
+' display output, or persist state itself — it delegates each concern:
+'   deck setup    → DeckFactory
+'   card effects  → CardActionExecutor
+'   display       → IGameView
+'   persistence   → IGameRepository
+'   state changes → GameState
+' [Program to Interface] GameController holds IGameView and IGameRepository,
+' never the concrete classes — it cannot tell and does not care which
+' implementation is injected.
 class GameController {
   - gameState: GameState
-  - gameView: GameView
-  - gameRepository: GameRepository
+  - gameView: IGameView
+  - gameRepository: IGameRepository
+  - deckFactory: DeckFactory
+  - cardActionExecutor: CardActionExecutor
   + startGame(numPlayers: int): void
   + playATurn(): void
   + playCard(cards: List<Card>): void
@@ -78,6 +233,18 @@ class GameController {
 }
 
 ' ── View ─────────────────────────────────────────────────
+' [Program to Interface] GameController depends on IGameView, not GameView.
+' A CLI view, GUI view, or test stub can be swapped in without any change
+' to GameController — it only knows about the interface contract.
+' [Delegation] GameView does not pull state — it receives what it needs as arguments.
+interface IGameView {
+  + showGameState(gameState: GameState): void
+  + showPlayerHand(player: Player): void
+  + promptCardSelection(player: Player): List<Card>
+  + showMessage(message: String): void
+  + showWinner(player: Player): void
+}
+
 class GameView {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
@@ -86,19 +253,31 @@ class GameView {
   + showWinner(player: Player): void
 }
 
+GameView ..|> IGameView
+
 ' ── Relationships ─────────────────────────────────────────
 Card --> CardType
 GameState --> GameStatus
 
-GameState "1" *-- "1"   Deck        : deck
-GameState "1" *-- "2..*" Player      : players
-GameState "1" o-- "*"   Card        : discardPile
+GameState "1" *-- "1"    Deck   : deck
+GameState "1" *-- "2..*" Player : players
+GameState "1" o-- "*"    Card   : discardPile
 
-Player  "1" o-- "*" Card : hand
-Deck    "1" *-- "*" Card : cards
+Player "1" o-- "*" Card : hand
+Deck   "1" *-- "*" Card : cards
 
 GameController --> GameState
-GameController --> GameView
-GameController --> GameRepository
+GameController --> IGameView
+GameController --> IGameRepository
+GameController --> DeckFactory
+GameController --> CardActionExecutor
+
+CardActionExecutor --> CardAction
+CardActionExecutor --> GameState
+DeckFactory        --> Deck
+
+FavorAction             *-- PlayerInteractionHelper
+TwoSameCardsAction      *-- PlayerInteractionHelper
+ThreeSameCatCardsAction *-- PlayerInteractionHelper
 
 @enduml
