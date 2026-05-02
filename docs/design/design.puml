@@ -74,6 +74,10 @@ class Deck {
 ' [Information Hiding] getDeck() is removed — callers never get the Deck object.
 ' GameState exposes only the specific deck operations the rest of the system needs.
 ' If Deck is ever replaced internally, no outside class breaks.
+' [Least Knowledge] GameController never reaches through GameState to call
+' methods on Player or Deck directly. GameState exposes the operations needed
+' so callers talk to GameState only — never to its internal objects.
+' e.g. addCardToCurrentPlayer() instead of getCurrentPlayer().addCard()
 class GameState {
   - status: GameStatus
   - players: List<Player>
@@ -99,6 +103,10 @@ class GameState {
   + getCurrentPlayer(): Player
   + getActivePlayers(): List<Player>
   + advancePlayer(): void
+  + addCardToCurrentPlayer(card: Card): void
+  + removeCardFromCurrentPlayer(card: Card): void
+  + currentPlayerHasCard(type: CardType): boolean
+  + eliminateCurrentPlayer(): void
   + getTurnsToTake(): int
   + setTurnsToTake(n: int): void
   + isSkipDraw(): boolean
@@ -152,6 +160,12 @@ class DeckFactory {
 ' To add a new card: implement CardAction, register it in CardActionExecutor.
 ' No existing class is modified — the system is open for extension,
 ' closed for modification.
+' [Hollywood Principle] CardAction implementations are passive low-level workers.
+' They are called by CardActionExecutor — they never call back up to
+' GameController or CardActionExecutor to trigger further game flow.
+' [Least Knowledge] Action classes only call methods on the GameState parameter
+' passed to them — they never reach through GameState to get a Player or Deck
+' and call methods on those directly.
 interface CardAction {
   + execute(gameState: GameState): void
 }
@@ -178,6 +192,8 @@ class SeeFutureAction {
 ' PlayerInteractionHelper which each action composes (has-a).
 ' [Loose Coupling] PlayerInteractionHelper only knows about Player and Card —
 ' no knowledge of GameState or GameController.
+' [Least Knowledge] PlayerInteractionHelper only calls methods on the Player
+' objects passed to it as parameters — its immediate friends.
 class PlayerInteractionHelper {
   + stealRandomCard(from: Player, to: Player): void
   + stealNamedCard(from: Player, to: Player, type: CardType): void
@@ -226,6 +242,8 @@ ThreeSameCatCardsAction ..|> CardAction
 ' [Open-Closed] CardActionExecutor is closed for modification — adding a new
 ' card type only requires registering a new CardAction in the map.
 ' No if/else or switch statements that would need editing for each new card.
+' [Hollywood Principle] CardActionExecutor is passive — it waits to be called
+' by GameController. It never initiates card execution on its own.
 class CardActionExecutor {
   - actions: Map<CardType, CardAction>
   + execute(card: Card, gameState: GameState): void
@@ -242,6 +260,14 @@ class CardActionExecutor {
 ' [Program to Interface] GameController holds IGameView and IGameRepository,
 ' never the concrete classes — it cannot tell and does not care which
 ' implementation is injected.
+' [Hollywood Principle] GameController is the high-level driver — all control
+' flows downward from here. It decides when to show the view, when to execute
+' a card, when to advance the turn. No lower-level class ever calls back into
+' GameController to initiate action.
+' [Least Knowledge] GameController only calls methods on its own fields:
+' gameState, gameView, gameRepository, deckFactory, cardActionExecutor.
+' It never chains calls like gameState.getCurrentPlayer().addCard() —
+' GameState exposes the operation directly instead.
 class GameController {
   - gameState: GameState
   - gameView: IGameView
@@ -264,6 +290,9 @@ class GameController {
 ' receives data as method arguments and displays it — one-way dependency only.
 ' [Open-Closed] IGameView is an extension point — new view implementations
 ' (CLI, GUI, web) can be added without modifying GameController or GameView.
+' [Hollywood Principle] IGameView is a passive low-level component — it waits
+' to be told what to display by GameController. It holds no reference to
+' GameController and never initiates any game flow itself.
 interface IGameView {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
