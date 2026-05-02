@@ -72,6 +72,31 @@ class Deck {
   + isEmpty(): boolean
 }
 
+' [High Cohesion] TurnState is extracted from GameState to hold only the
+' flags that change turn-by-turn. Everything in this class relates to
+' one question: what is the current state of this turn?
+' [Low Coupling] TurnState only knows about Card (for pendingAction).
+' No knowledge of Player, Deck, GameState, or GameController.
+class TurnState {
+  - turnsToTake: int
+  - skipDraw: boolean
+  - isAttacking: boolean
+  - pendingAction: Card
+  - nopeCount: int
+  + getTurnsToTake(): int
+  + setTurnsToTake(n: int): void
+  + isSkipDraw(): boolean
+  + setSkipDraw(skip: boolean): void
+  + isAttacking(): boolean
+  + setAttacking(attacking: boolean): void
+  + getPendingAction(): Card
+  + setPendingAction(card: Card): void
+  + getNopeCount(): int
+  + incrementNopeCount(): void
+  + resetNopeCount(): void
+  + reset(): void
+}
+
 ' [Encapsulation] All state fields are private. GameState controls how state
 ' is read and changed — no field is accessible directly from outside.
 ' addToDiscardPile() and getDiscardPile() wrap the discard list.
@@ -83,17 +108,18 @@ class Deck {
 ' methods on Player or Deck directly. GameState exposes the operations needed
 ' so callers talk to GameState only — never to its internal objects.
 ' e.g. addCardToCurrentPlayer() instead of getCurrentPlayer().addCard()
+' [High Cohesion] GameState now only manages core game state: who is playing,
+' what is in the deck, and what has been discarded. Turn-specific flags
+' were extracted into TurnState to keep each class focused.
+' [Low Coupling] GameState only depends on Player, Deck, Card, GameStatus,
+' and TurnState — five direct dependencies, all necessary.
 class GameState {
   - status: GameStatus
   - players: List<Player>
   - currentPlayerIndex: int
-  - turnsToTake: int
-  - skipDraw: boolean
-  - isAttacking: boolean
-  - pendingAction: Card
-  - nopeCount: int
   - deck: Deck
   - discardPile: List<Card>
+  - turnState: TurnState
   + getStatus(): GameStatus
   + setStatus(status: GameStatus): void
   + drawFromDeck(): Card
@@ -112,17 +138,7 @@ class GameState {
   + removeCardFromCurrentPlayer(card: Card): void
   + currentPlayerHasCard(type: CardType): boolean
   + eliminateCurrentPlayer(): void
-  + getTurnsToTake(): int
-  + setTurnsToTake(n: int): void
-  + isSkipDraw(): boolean
-  + setSkipDraw(skip: boolean): void
-  + isAttacking(): boolean
-  + setAttacking(attacking: boolean): void
-  + getPendingAction(): Card
-  + setPendingAction(card: Card): void
-  + getNopeCount(): int
-  + incrementNopeCount(): void
-  + resetNopeCount(): void
+  + getTurnState(): TurnState
 }
 
 ' ── Repository ───────────────────────────────────────────
@@ -147,6 +163,8 @@ GameRepository ..|> IGameRepository
 ' [Delegation] GameController delegates deck-building to DeckFactory.
 ' [Information Hiding] Callers do not know card counts, card names,
 ' or how exploding kittens are reinserted — buildDeck() hides all of it.
+' [High Cohesion] DeckFactory has one job: build the initial deck.
+' [Low Coupling] Only depends on Deck and Card — nothing else.
 class DeckFactory {
   + buildDeck(numPlayers: int): Deck
 }
@@ -199,6 +217,9 @@ class SeeFutureAction {
 ' no knowledge of GameState or GameController.
 ' [Least Knowledge] PlayerInteractionHelper only calls methods on the Player
 ' objects passed to it as parameters — its immediate friends.
+' [High Cohesion] Every method in this class is about transferring cards
+' between players — one tightly focused responsibility.
+' [Low Coupling] Only depends on Player and Card.
 class PlayerInteractionHelper {
   + stealRandomCard(from: Player, to: Player): void
   + stealNamedCard(from: Player, to: Player, type: CardType): void
@@ -336,9 +357,10 @@ GameView ..|> IPlayerInput
 Card --> CardType
 GameState --> GameStatus
 
-GameState "1" *-- "1"    Deck   : deck
-GameState "1" *-- "2..*" Player : players
-GameState "1" o-- "*"    Card   : discardPile
+GameState "1" *-- "1"    Deck      : deck
+GameState "1" *-- "2..*" Player    : players
+GameState "1" o-- "*"    Card      : discardPile
+GameState "1" *-- "1"    TurnState : turnState
 
 Player "1" o-- "*" Card : hand
 Deck   "1" *-- "*" Card : cards
