@@ -21,6 +21,8 @@ enum GameStatus {
 ' ── Model ────────────────────────────────────────────────
 
 ' [Encapsulation] Fields private; callers use getType()/getName() only
+' [Loose Coupling] Card knows nothing beyond CardType — no knowledge of
+' Player, Deck, GameState, or GameController.
 class Card {
   - type: CardType
   - name: String
@@ -31,6 +33,8 @@ class Card {
 ' [Encapsulation] hand is private; Player manages its own hand internally.
 ' eliminate() clears hand + sets flag in one place — not done by outside callers.
 ' getHand() returns unmodifiable list so outside code cannot bypass addCard/removeCard.
+' [Loose Coupling] Player knows only about Card. No knowledge of GameState,
+' GameController, or any other Player — players never talk to each other directly.
 class Player {
   - id: String
   - name: String
@@ -50,6 +54,8 @@ class Player {
 
 ' [Encapsulation] cards list is private; all deck operations go through methods.
 ' isEmpty() prevents callers from needing to call size() == 0 themselves.
+' [Loose Coupling] Deck knows only about Card. No knowledge of Player,
+' GameState, or GameController.
 class Deck {
   - cards: List<Card>
   + addCard(card: Card): void
@@ -110,6 +116,8 @@ class GameState {
 ' [Program to Interface] GameController depends on IGameRepository, not the
 ' concrete class. A file-based, database, or in-memory implementation
 ' can be swapped in without touching GameController.
+' [Open-Closed] IGameRepository is an extension point — new persistence
+' strategies can be added without modifying any existing class.
 interface IGameRepository {
   + save(gameState: GameState): void
   + load(): GameState
@@ -136,6 +144,14 @@ class DeckFactory {
 ' Adding a new card type = adding one new class; nothing else changes.
 ' [Composition Over Inheritance] No BaseCardAction superclass exists.
 ' Shared logic between action classes is handled via composed helpers, not inheritance.
+' [Loose Coupling] Action classes receive GameState as a method parameter — they
+' do not store it as a field. Parameter coupling is far lighter than field coupling:
+' action classes come and go without holding a permanent reference to GameState.
+' No action class knows about any other action class.
+' [Open-Closed] CardAction is the extension point for new card types.
+' To add a new card: implement CardAction, register it in CardActionExecutor.
+' No existing class is modified — the system is open for extension,
+' closed for modification.
 interface CardAction {
   + execute(gameState: GameState): void
 }
@@ -160,6 +176,8 @@ class SeeFutureAction {
 ' ThreeSameCatCardsAction all need to steal/request cards from another player.
 ' Instead of a BaseStealAction they all extend, that shared logic lives in
 ' PlayerInteractionHelper which each action composes (has-a).
+' [Loose Coupling] PlayerInteractionHelper only knows about Player and Card —
+' no knowledge of GameState or GameController.
 class PlayerInteractionHelper {
   + stealRandomCard(from: Player, to: Player): void
   + stealNamedCard(from: Player, to: Player, type: CardType): void
@@ -203,6 +221,11 @@ ThreeSameCatCardsAction ..|> CardAction
 ' [Information Hiding] The mapping of CardType → CardAction is hidden inside.
 ' [Encapsulate What Varies] Holds a map of CardType → CardAction so the
 ' routing logic is in one place and never leaks into GameController.
+' [Loose Coupling] CardActionExecutor only depends on CardAction — it passes
+' GameState as a parameter to execute() but does not store it as a field.
+' [Open-Closed] CardActionExecutor is closed for modification — adding a new
+' card type only requires registering a new CardAction in the map.
+' No if/else or switch statements that would need editing for each new card.
 class CardActionExecutor {
   - actions: Map<CardType, CardAction>
   + execute(card: Card, gameState: GameState): void
@@ -237,6 +260,10 @@ class GameController {
 ' A CLI view, GUI view, or test stub can be swapped in without any change
 ' to GameController — it only knows about the interface contract.
 ' [Delegation] GameView does not pull state — it receives what it needs as arguments.
+' [Loose Coupling] IGameView never calls back into GameController. It only
+' receives data as method arguments and displays it — one-way dependency only.
+' [Open-Closed] IGameView is an extension point — new view implementations
+' (CLI, GUI, web) can be added without modifying GameController or GameView.
 interface IGameView {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
@@ -273,7 +300,6 @@ GameController --> DeckFactory
 GameController --> CardActionExecutor
 
 CardActionExecutor --> CardAction
-CardActionExecutor --> GameState
 DeckFactory        --> Deck
 
 FavorAction             *-- PlayerInteractionHelper
