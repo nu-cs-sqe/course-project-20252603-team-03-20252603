@@ -23,6 +23,7 @@ enum GameStatus {
 ' [Encapsulation] Fields private; callers use getType()/getName() only
 ' [Loose Coupling] Card knows nothing beyond CardType — no knowledge of
 ' Player, Deck, GameState, or GameController.
+' [Single Responsibility] Card has one reason to change: what data a card holds.
 class Card {
   - type: CardType
   - name: String
@@ -35,6 +36,8 @@ class Card {
 ' getHand() returns unmodifiable list so outside code cannot bypass addCard/removeCard.
 ' [Loose Coupling] Player knows only about Card. No knowledge of GameState,
 ' GameController, or any other Player — players never talk to each other directly.
+' [Single Responsibility] Player has one reason to change: how a player's hand
+' and elimination status are managed.
 class Player {
   - id: String
   - name: String
@@ -56,6 +59,8 @@ class Player {
 ' isEmpty() prevents callers from needing to call size() == 0 themselves.
 ' [Loose Coupling] Deck knows only about Card. No knowledge of Player,
 ' GameState, or GameController.
+' [Single Responsibility] Deck has one reason to change: how the draw pile
+' is managed and accessed.
 class Deck {
   - cards: List<Card>
   + addCard(card: Card): void
@@ -265,12 +270,18 @@ class CardActionExecutor {
 ' a card, when to advance the turn. No lower-level class ever calls back into
 ' GameController to initiate action.
 ' [Least Knowledge] GameController only calls methods on its own fields:
-' gameState, gameView, gameRepository, deckFactory, cardActionExecutor.
+' gameState, display, input, gameRepository, deckFactory, cardActionExecutor.
 ' It never chains calls like gameState.getCurrentPlayer().addCard() —
 ' GameState exposes the operation directly instead.
+' [Single Responsibility] GameController has one reason to change: game flow logic.
+' Display changes go to GameView. State changes go to GameState.
+' [Dependency Inversion] GameController depends on abstractions (IGameDisplay,
+' IPlayerInput, IGameRepository) not concrete classes — both high-level and
+' low-level modules depend on the same interfaces, never on each other directly.
 class GameController {
   - gameState: GameState
-  - gameView: IGameView
+  - display: IGameDisplay
+  - input: IPlayerInput
   - gameRepository: IGameRepository
   - deckFactory: DeckFactory
   - cardActionExecutor: CardActionExecutor
@@ -282,34 +293,44 @@ class GameController {
 }
 
 ' ── View ─────────────────────────────────────────────────
-' [Program to Interface] GameController depends on IGameView, not GameView.
-' A CLI view, GUI view, or test stub can be swapped in without any change
-' to GameController — it only knows about the interface contract.
-' [Delegation] GameView does not pull state — it receives what it needs as arguments.
-' [Loose Coupling] IGameView never calls back into GameController. It only
-' receives data as method arguments and displays it — one-way dependency only.
-' [Open-Closed] IGameView is an extension point — new view implementations
-' (CLI, GUI, web) can be added without modifying GameController or GameView.
-' [Hollywood Principle] IGameView is a passive low-level component — it waits
-' to be told what to display by GameController. It holds no reference to
-' GameController and never initiates any game flow itself.
-interface IGameView {
+' [Interface Segregation] IGameView was split into two focused interfaces:
+'   IGameDisplay — output only (show things to players)
+'   IPlayerInput  — input only (collect choices from players)
+' A test stub that only needs to display output implements IGameDisplay alone
+' without being forced to implement promptCardSelection it never uses.
+
+' [Program to Interface] GameController depends on IGameDisplay and IPlayerInput,
+' not the concrete GameView class.
+' [Open-Closed] Both interfaces are extension points — new implementations
+' slot in without modifying GameController or GameView.
+' [Hollywood Principle] Both are passive — they wait to be called by GameController.
+' [Loose Coupling] Neither holds a reference to GameController.
+' [Liskov Substitution] Any IGameDisplay or IPlayerInput implementation must be
+' fully substitutable — GameController must work identically regardless of which
+' concrete class is injected.
+interface IGameDisplay {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
-  + promptCardSelection(player: Player): List<Card>
   + showMessage(message: String): void
   + showWinner(player: Player): void
 }
 
+interface IPlayerInput {
+  + promptCardSelection(player: Player): List<Card>
+}
+
+' [Single Responsibility] GameView has one reason to change: how the game
+' is presented to the user. It handles both display and input for the CLI.
 class GameView {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
-  + promptCardSelection(player: Player): List<Card>
   + showMessage(message: String): void
   + showWinner(player: Player): void
+  + promptCardSelection(player: Player): List<Card>
 }
 
-GameView ..|> IGameView
+GameView ..|> IGameDisplay
+GameView ..|> IPlayerInput
 
 ' ── Relationships ─────────────────────────────────────────
 Card --> CardType
@@ -323,7 +344,8 @@ Player "1" o-- "*" Card : hand
 Deck   "1" *-- "*" Card : cards
 
 GameController --> GameState
-GameController --> IGameView
+GameController --> IGameDisplay
+GameController --> IPlayerInput
 GameController --> IGameRepository
 GameController --> DeckFactory
 GameController --> CardActionExecutor
