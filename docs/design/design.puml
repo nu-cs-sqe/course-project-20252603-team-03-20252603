@@ -20,33 +20,60 @@ enum GameStatus {
 
 ' ── Card Action Strategy ──────────────────────────────────
 interface CardAction {
-  + execute(gameState: GameState, player: Player): void
+  + execute(gameState: GameState): void
 }
 
 class SkipAction implements CardAction
 class AttackAction implements CardAction
 class ShuffleAction implements CardAction
 class SeeTheFutureAction implements CardAction
-class FavorAction implements CardAction
 class NopeAction implements CardAction
-class TwoCatAction implements CardAction
-class ThreeCatAction implements CardAction
+class DefuseAction implements CardAction
+
+class PlayerInteractionHelper {
+  + stealRandomCard(from: Player, to: Player): void
+  + stealNamedCard(from: Player, to: Player, type: CardType): void
+}
+
+class FavorAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+class TwoCatAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+class ThreeCatAction {
+  - helper: PlayerInteractionHelper
+  + execute(gameState: GameState): void
+}
+
+FavorAction    ..|> CardAction
+TwoCatAction   ..|> CardAction
+ThreeCatAction ..|> CardAction
 
 ' ── Model ────────────────────────────────────────────────
 class Card {
   - type: CardType
   - name: String
   - action: CardAction
-  + execute(gameState: GameState, player: Player): void
+  + isType(type: CardType): boolean
+  + execute(gameState: GameState): void
 }
 
 class Player {
   - id: String
   - name: String
   - hand: List<Card>
+  - peekCards: List<Card>
   + addCard(card: Card): void
   + removeCard(card: Card): void
   + hasCard(type: CardType): boolean
+  + getCardOfType(type: CardType): Card
+  + storePeek(cards: List<Card>): void
+  + clearPeek(): void
 }
 
 class Deck {
@@ -54,8 +81,12 @@ class Deck {
   + shuffle(): void
   + drawTop(): Card
   + insertAt(card: Card, index: int): void
-  + peekTop(n: int): List<Card>
   + size(): int
+  + isEmpty(): boolean
+}
+
+class DeckFactory {
+  + buildDeck(numPlayers: int): Deck
 }
 
 class TurnState {
@@ -64,39 +95,72 @@ class TurnState {
   - isAttacking: boolean
   - pendingAction: Card
   - nopeCount: int
-  + reset(): void
+  + enableSkipDraw(): void
+  + startAttack(turns: int): void
+  + setPendingAction(card: Card): void
+  + clearPendingAction(): void
   + incrementNopeCount(): void
   + decrementTurns(): void
+  + shouldSkipDraw(): boolean
+  + isAttacking(): boolean
+  + nopeCount(): int
+  + turnsRemaining(): int
+  + reset(): void
 }
 
 class GameState {
   - status: GameStatus
   - activePlayers: Queue<Player>
-  - turnState: TurnState
+  - eliminatedPlayers: List<Player>
   - deck: Deck
   - discardPile: List<Card>
+  - turnState: TurnState
+  + isActive(): boolean
+  + endGame(): void
   + getCurrentPlayer(): Player
   + advancePlayer(): void
   + eliminateCurrentPlayer(): void
-  + getActivePlayerCount(): int
+  + activePlayerCount(): int
+  + drawFromDeck(): Card
+  + isDeckEmpty(): boolean
+  + insertIntoDeck(card: Card, index: int): void
+  + shuffleDeck(): void
   + discardCard(card: Card): void
+  + addCardToCurrentPlayer(card: Card): void
+  + removeCardFromCurrentPlayer(card: Card): void
+  + currentPlayerHasCard(type: CardType): boolean
+  + turnState(): TurnState
 }
 
 ' ── View ─────────────────────────────────────────────────
-interface IGameView {
+interface IGameDisplay {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
-  + promptCardSelection(player: Player): List<Card>
   + showMessage(message: String): void
   + showWinner(player: Player): void
 }
 
-class GameView implements IGameView
+interface IPlayerInput {
+  + promptCardSelection(player: Player): List<Card>
+}
+
+class GameView {
+  + showGameState(gameState: GameState): void
+  + showPlayerHand(player: Player): void
+  + showMessage(message: String): void
+  + showWinner(player: Player): void
+  + promptCardSelection(player: Player): List<Card>
+}
+
+GameView ..|> IGameDisplay
+GameView ..|> IPlayerInput
 
 ' ── Controller ───────────────────────────────────────────
 class GameController {
   - gameState: GameState
-  - gameView: IGameView
+  - display: IGameDisplay
+  - input: IPlayerInput
+  - deckFactory: DeckFactory
   + startGame(numPlayers: int): void
   + playATurn(): void
   + playCard(cards: List<Card>): void
@@ -109,15 +173,24 @@ Card --> CardType
 Card --> CardAction
 
 GameState --> GameStatus
-GameState "1" *-- "1"   Deck    : deck
-GameState "1" *-- "*"   Player  : activePlayers
+GameState "1" *-- "1"   Deck      : deck
+GameState "1" *-- "*"   Player    : activePlayers
+GameState "1" o-- "*"   Player    : eliminatedPlayers
 GameState "1" *-- "1"   TurnState : turnState
-GameState "1" o-- "*"   Card    : discardPile
+GameState "1" o-- "*"   Card      : discardPile
 
 Player "1" o-- "*" Card : hand
 Deck   "1" *-- "*" Card : cards
 
+FavorAction    *-- PlayerInteractionHelper
+TwoCatAction   *-- PlayerInteractionHelper
+ThreeCatAction *-- PlayerInteractionHelper
+
 GameController --> GameState
-GameController --> IGameView
+GameController --> IGameDisplay
+GameController --> IPlayerInput
+GameController --> DeckFactory
+
+DeckFactory --> Deck
 
 @enduml
