@@ -18,17 +18,32 @@ enum GameStatus {
   ENDED
 }
 
+' ── Card Action Strategy ──────────────────────────────────
+interface CardAction {
+  + execute(gameState: GameState, player: Player): void
+}
+
+class SkipAction implements CardAction
+class AttackAction implements CardAction
+class ShuffleAction implements CardAction
+class SeeTheFutureAction implements CardAction
+class FavorAction implements CardAction
+class NopeAction implements CardAction
+class TwoCatAction implements CardAction
+class ThreeCatAction implements CardAction
+
 ' ── Model ────────────────────────────────────────────────
 class Card {
   - type: CardType
   - name: String
+  - action: CardAction
+  + execute(gameState: GameState, player: Player): void
 }
 
 class Player {
   - id: String
   - name: String
   - hand: List<Card>
-  - isEliminated: boolean
   + addCard(card: Card): void
   + removeCard(card: Card): void
   + hasCard(type: CardType): boolean
@@ -43,42 +58,32 @@ class Deck {
   + size(): int
 }
 
-class GameState {
-  - status: GameStatus
-  - players: List<Player>
-  - currentPlayerIndex: int
+class TurnState {
   - turnsToTake: int
   - skipDraw: boolean
   - isAttacking: boolean
   - pendingAction: Card
   - nopeCount: int
+  + reset(): void
+  + incrementNopeCount(): void
+  + decrementTurns(): void
+}
+
+class GameState {
+  - status: GameStatus
+  - activePlayers: Queue<Player>
+  - turnState: TurnState
   - deck: Deck
   - discardPile: List<Card>
   + getCurrentPlayer(): Player
-  + getActivePlayers(): List<Player>
   + advancePlayer(): void
-}
-
-' ── Repository ───────────────────────────────────────────
-class GameRepository {
-  + save(gameState: GameState): void
-  + load(): GameState
-} // we might not need this for now
-
-' ── Controller ───────────────────────────────────────────
-class GameController {
-  - gameState: GameState
-  - gameView: GameView
-  - gameRepository: GameRepository
-  + startGame(numPlayers: int): void
-  + playATurn(): void
-  + playCard(cards: List<Card>): void
-  + drawCard(): void
-  + endGame(): void
+  + eliminateCurrentPlayer(): void
+  + getActivePlayerCount(): int
+  + discardCard(card: Card): void
 }
 
 ' ── View ─────────────────────────────────────────────────
-class GameView {
+interface IGameView {
   + showGameState(gameState: GameState): void
   + showPlayerHand(player: Player): void
   + promptCardSelection(player: Player): List<Card>
@@ -86,19 +91,33 @@ class GameView {
   + showWinner(player: Player): void
 }
 
+class GameView implements IGameView
+
+' ── Controller ───────────────────────────────────────────
+class GameController {
+  - gameState: GameState
+  - gameView: IGameView
+  + startGame(numPlayers: int): void
+  + playATurn(): void
+  + playCard(cards: List<Card>): void
+  + drawCard(): void
+  + endGame(): void
+}
+
 ' ── Relationships ─────────────────────────────────────────
 Card --> CardType
+Card --> CardAction
+
 GameState --> GameStatus
+GameState "1" *-- "1"   Deck    : deck
+GameState "1" *-- "*"   Player  : activePlayers
+GameState "1" *-- "1"   TurnState : turnState
+GameState "1" o-- "*"   Card    : discardPile
 
-GameState "1" *-- "1"   Deck        : deck
-GameState "1" *-- "2..*" Player      : players
-GameState "1" o-- "*"   Card        : discardPile
-
-Player  "1" o-- "*" Card : hand
-Deck    "1" *-- "*" Card : cards
+Player "1" o-- "*" Card : hand
+Deck   "1" *-- "*" Card : cards
 
 GameController --> GameState
-GameController --> GameView
-GameController --> GameRepository
+GameController --> IGameView
 
 @enduml
