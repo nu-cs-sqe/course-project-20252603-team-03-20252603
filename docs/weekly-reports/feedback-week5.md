@@ -34,12 +34,12 @@ Status:
 ### Planning & Progress Evaluation
 | # | Item                                                                                                                                                         |  Status   | Reviewer Notes      | Source Instructions or Resources                                                  |
 |---|--------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------:|---------------------|-----------------------------------------------------------------------------------|
-| 4 | The team documents every week’s planning and progress evaluation professionally. (needed for Letter Grade B)                                                 |  ⚠️       | Weekly tracking is present; make entries more complete and polished for stronger clarity. | Week 4 Wednesday Lecture (Lecture 08), Project grading rubrics                    |
+| 4 | The team documents every week’s planning and progress evaluation professionally. (needed for Letter Grade B)                                                 |  ✅       | Nice improvement this week: planning updates are clear, specific, and actionable. | Week 4 Wednesday Lecture (Lecture 08), Project grading rubrics                    |
 
 ### Progress & Collaboration
 | # | Item                                                                                                                                                                                   |  Status   | Reviewer Notes      | Source Instructions or Resources                 |
 |---|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------:|---------------------|--------------------------------------------------|
-| 5 | Overall development progress (recall the recommended order is: Game Setup Phase -> One turn of the game -> Multiple turns -> One win condition -> Other win conditions (if applicable) |  ⚠️       | Setup choices are done, but user stories and UML were marked not started; next step is implementing one playable turn. | Canvas assignment Project: Week 4 and 5 Guidance |
+| 5 | Overall development progress (recall the recommended order is: Game Setup Phase -> One turn of the game -> Multiple turns -> One win condition -> Other win conditions (if applicable) |  ⚠️       | Good progress: user stories and class design UML are done and team-approved; next step is starting coding task assignments and one playable turn. | Canvas assignment Project: Week 4 and 5 Guidance |
 | 6 | Collaboration: Quality of discussion in PR reviews and work item comments on the board.                                                                                                |  ✅       | All good!           |                                                  |
 
 ### The following items are not checked by the reviewer as they were checked in the previous weeks
@@ -55,4 +55,4 @@ But if your team wants the reviewer to check any of these for any reasons, pleas
 | 3.3 | Task assignments are documented clearly in the management board.                                                                                             |           |                     | Week 4 Wednesday Lecture (Lecture 08), Canvas assignment Project: Week 4 Guidance |
 
 ## Additional Comments
-Progress seems a bit limited this week, especially on BVA, TDD, and moving into implementation. Try to shift focus from planning to building at least one playable flow, even if it is simple. Also make sure to document BVA clearly and start showing a test first workflow in your commits. Consistent small progress each week will make a big difference, so aim to pick up the pace next week.
+Nice progress this week on planning and design fundamentals; completing and approving user stories/UML is an important milestone. For next week, focus on coding task assignments, one playable flow, and early BVA/TDD evidence in commits.
