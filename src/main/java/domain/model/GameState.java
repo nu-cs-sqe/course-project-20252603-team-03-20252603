@@ -27,5 +27,8 @@ public class GameState {
     public void addCardToCurrentPlayer(Card card) {}
     public void removeCardFromCurrentPlayer(Card card) {}
     public boolean currentPlayerHasCard(CardType type) { return false; }
+    public List<Card> peekTopOfDeck(int n) { return null; }
+    public int getDeckSize() { return 0; }
+    public void insertPendingCardAt(int position) {}
     public TurnState turnState() { return null; }
 }
