@@ -45,15 +45,15 @@ public class ComboValidator {
 		}
 		if (cards.size() == 1) {
 			Card card = cards.get(0);
-			if (card.isType(CardType.SKIP)) return new SkipAction();
-			if (card.isType(CardType.ATTACK)) return new AttackAction();
-			if (card.isType(CardType.SHUFFLE)) return new ShuffleAction();
-			if (card.isType(CardType.SEE_THE_FUTURE)) return new SeeTheFutureAction();
-			if (card.isType(CardType.FAVOR)) return new FavorAction(helper);
-			if (card.isType(CardType.NOPE)) return new NopeAction();
+			if (card.isType(CardType.SKIP)) { return new SkipAction(); }
+			if (card.isType(CardType.ATTACK)) { return new AttackAction(); }
+			if (card.isType(CardType.SHUFFLE)) { return new ShuffleAction(); }
+			if (card.isType(CardType.SEE_THE_FUTURE)) { return new SeeTheFutureAction(); }
+			if (card.isType(CardType.FAVOR)) { return new FavorAction(helper); }
+			if (card.isType(CardType.NOPE)) { return new NopeAction(); }
 		}
-		if (cards.size() == 2) return new TwoCatAction(helper);
-		if (cards.size() == 3) return new ThreeCatAction(helper);
+		if (cards.size() == 2) { return new TwoCatAction(helper); }
+		if (cards.size() == 3) { return new ThreeCatAction(helper); }
 		throw new IllegalArgumentException("Invalid combo");
 	}
 }
