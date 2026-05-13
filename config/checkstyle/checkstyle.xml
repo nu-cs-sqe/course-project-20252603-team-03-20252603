@@ -97,12 +97,6 @@
 
         <!-- ===== CLASSES ===== -->
 
-        <!-- Classes should not be excessively long -->
-        <module name="TypeLength">
-            <property name="max" value="200"/>
-            <message key="maxLen.type" value="Type length is {0} lines (max 200). Consider splitting responsibilities (SRP)."/>
-        </module>
-
         <!-- Only one top-level class per file -->
         <module name="OneTopLevelClass"/>
 

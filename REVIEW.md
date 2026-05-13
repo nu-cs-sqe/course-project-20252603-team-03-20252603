@@ -28,6 +28,7 @@ this file focuses on design, logic, and correctness issues that static analysis 
 - Classes that cannot be described in 25 words without "and", "or", "if", or "but" — too many responsibilities
 - Depending on concrete implementations instead of interfaces (violates Dependency Inversion)
 - Open/Closed violations: adding new behavior requires modifying existing code instead of extending it
+- Classes should be at most 200 lines long. If exceeded, should consider splitting responsibilities (SRP) 
 
 ### Object Design
 - Law of Demeter violations: chaining calls like `a.getB().getC().doSomething()`
