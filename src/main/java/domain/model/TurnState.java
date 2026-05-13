@@ -1,5 +1,7 @@
 package domain.model;
 
+import java.util.Optional;
+
 public class TurnState {
     private int turnsToTake;
     private boolean skipDraw;
@@ -17,5 +19,6 @@ public class TurnState {
     public boolean isAttacking() { return false; }
     public int nopeCount() { return 0; }
     public int turnsRemaining() { return 0; }
+    public Optional<Card> pendingAction() { return Optional.empty(); }
     public void reset() {}
 }

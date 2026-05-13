@@ -13,13 +13,14 @@
 - `isAttacking()` → boolean
 - `nopeCount()` → int
 - `turnsRemaining()` → int
+- `pendingAction()` → Optional<Card>
 - `reset()` → void
 
 ## Assumptions and notes
 
-- On construction and after `reset()`, default state is: `turnsRemaining()=1`, `shouldSkipDraw()=false`, `isAttacking()=false`, `nopeCount()=0`, `pendingAction=null`.
+- On construction and after `reset()`, default state is: `turnsRemaining()=1`, `shouldSkipDraw()=false`, `isAttacking()=false`, `nopeCount()=0`, `pendingAction()=Optional.empty()`.
 - `decrementTurns()` floors at 0 and does not go negative.
-- A `pendingAction()` getter (not currently in the design) must be added to make `setPendingAction`/`clearPendingAction` directly testable.
+- `pendingAction()` returns `Optional<Card>` — passing null to `setPendingAction` is not permitted per Clean Code guidelines.
 - `isAttacking` is set to `true` by `startAttack()` and only cleared by `reset()`.
 
 
@@ -34,7 +35,7 @@ spaces: initial value of each field
 | constructor_InitializesSkipDrawFalse       | new TurnState       | shouldSkipDraw() = false | :x:          |
 | constructor_InitializesNotAttacking        | new TurnState       | isAttacking() = false    | :x:          |
 | constructor_InitializesNopeCountZero       | new TurnState       | nopeCount() = 0          | :x:          |
-| constructor_InitializesNoPendingAction     | new TurnState       | pendingAction() = null   | :x:          |
+| constructor_InitializesNoPendingAction     | new TurnState       | pendingAction() = Optional.empty() | :x: |
 
 
 
@@ -72,33 +73,31 @@ cases:
 
 ### Method under test: `setPendingAction(card: Card)`
 
-spaces: card = {null, non-null}; existing pendingAction = {null, non-null}
+spaces: existing pendingAction = {empty, present}
 
 cases:
-- non-null card, no prior pending action
-- non-null card, replaces existing pending action
-- null card
+- card provided, no prior pending action
+- card provided, replaces existing pending action
 
-| test_Name                                          | State of the System         | Expected output            | Implemented? |
-|----------------------------------------------------|-----------------------------|----------------------------|--------------|
-| setPendingAction_NonNullCard_StoresPendingAction   | no prior pending action     | pendingAction() = card     | :x:          |
-| setPendingAction_ReplacesExisting_StoresNewCard    | prior pending action exists | pendingAction() = new card | :x:          |
-| setPendingAction_NullCard_StoresNull               | any state                   | pendingAction() = null     | :x:          |
+| test_Name                                          | State of the System         | Expected output                          | Implemented? |
+|----------------------------------------------------|-----------------------------|------------------------------------------|--------------|
+| setPendingAction_NonNullCard_StoresPendingAction   | no prior pending action     | pendingAction() = Optional.of(card)      | :x:          |
+| setPendingAction_ReplacesExisting_StoresNewCard    | prior pending action exists | pendingAction() = Optional.of(new card)  | :x:          |
 
 
 
 ### Method under test: `clearPendingAction()`
 
-spaces: pendingAction = {non-null, already null}
+spaces: pendingAction = {present, already empty}
 
 cases:
-- pendingAction is set → clears to null
-- pendingAction already null → stays null, no throw
+- pendingAction is set → clears to empty
+- pendingAction already empty → stays empty, no throw
 
-| test_Name                                  | State of the System    | Expected output        | Implemented? |
-|--------------------------------------------|------------------------|------------------------|--------------|
-| clearPendingAction_WhenSet_ClearsToNull    | pendingAction was set  | pendingAction() = null | :x:          |
-| clearPendingAction_AlreadyNull_NoThrow     | pendingAction was null | pendingAction() = null | :x:          |
+| test_Name                                  | State of the System       | Expected output                    | Implemented? |
+|--------------------------------------------|---------------------------|------------------------------------|--------------|
+| clearPendingAction_WhenSet_ClearsToEmpty   | pendingAction was set     | pendingAction() = Optional.empty() | :x:          |
+| clearPendingAction_AlreadyEmpty_NoThrow    | pendingAction was empty   | pendingAction() = Optional.empty() | :x:          |
 
 
 
@@ -144,5 +143,5 @@ cases:
 
 | test_Name                                 | State of the System                                                  | Expected output                                                                              | Implemented? |
 |-------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------|--------------|
-| reset_FromDirtyState_RestoresDefaults     | skipDraw=true, isAttacking=true, nopeCount=3, pendingAction=non-null | turnsRemaining()=1, shouldSkipDraw()=false, isAttacking()=false, nopeCount()=0, pendingAction()=null | :x: |
+| reset_FromDirtyState_RestoresDefaults     | skipDraw=true, isAttacking=true, nopeCount=3, pendingAction=present | turnsRemaining()=1, shouldSkipDraw()=false, isAttacking()=false, nopeCount()=0, pendingAction()=Optional.empty() | :x: |
 | reset_FromDefaultState_RemainsDefault     | fresh TurnState                                                      | all defaults unchanged                                                                       | :x:          |
