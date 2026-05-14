@@ -75,4 +75,14 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), nonEmptyDeck());
 		assertEquals(1, gs.getDeckSize());
 	}
+
+	@Test
+	public void getDeckSize_MultipleCards_ReturnsCount() {
+		Deck deck = new Deck(List.of(
+				new Card(CardType.SKIP, CardName.SKIP, new SkipAction()),
+				new Card(CardType.SKIP, CardName.SKIP, new SkipAction())
+		));
+		GameState gs = new GameState(twoPlayers(), deck);
+		assertEquals(2, gs.getDeckSize());
+	}
 }
