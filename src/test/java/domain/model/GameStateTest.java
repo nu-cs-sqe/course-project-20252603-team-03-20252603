@@ -112,4 +112,11 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), nonEmptyDeck());
 		assertNotNull(gs.drawFromDeck());
 	}
+
+	@Test
+	public void drawFromDeck_OneCard_EmptiesDeck() {
+		GameState gs = new GameState(twoPlayers(), nonEmptyDeck());
+		gs.drawFromDeck();
+		assertTrue(gs.isDeckEmpty());
+	}
 }
