@@ -33,4 +33,11 @@ public class GameStateTest {
 		gs.endGame();
 		assertFalse(gs.isActive());
 	}
+
+	@Test
+	public void isDeckEmpty_NonEmptyDeck_ReturnsFalse() {
+		GameState gs = new GameState(GameStatus.ACTIVE);
+		gs.endGame();
+		assertFalse(gs.isDeckEmpty());
+	}
 }
