@@ -106,4 +106,10 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), emptyDeck());
 		assertThrows(IllegalStateException.class, gs::drawFromDeck);
 	}
+
+	@Test
+	public void drawFromDeck_OneCard_ReturnsCard() {
+		GameState gs = new GameState(twoPlayers(), nonEmptyDeck());
+		assertNotNull(gs.drawFromDeck());
+	}
 }
