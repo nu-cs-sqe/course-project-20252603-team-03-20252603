@@ -18,6 +18,10 @@ public class GameState {
 	private List<Card> discardPile;
 	private TurnState turnState;
 
+	public GameState(GameStatus status) {
+		this.status = status;
+	}
+
 	public boolean isActive() {
 		return false;
 	}
