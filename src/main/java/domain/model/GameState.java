@@ -18,9 +18,9 @@ public class GameState {
 	private List<Card> discardPile;
 	private TurnState turnState;
 
-	public GameState(GameStatus status) {
-		this.status = status;
-
+	public GameState(List<Player> players, Deck deck) {
+		this.status = GameStatus.ACTIVE;
+		this.deck = new Deck(deck);
 	}
 
 	public boolean isActive() {
@@ -50,7 +50,7 @@ public class GameState {
 	}
 
 	public boolean isDeckEmpty() {
-		return false;
+		return deck.isEmpty();
 	}
 
 	public void insertIntoDeck(Card card, int index) {

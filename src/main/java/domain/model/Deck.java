@@ -23,6 +23,12 @@ public class Deck {
 		this.random = random;
 	}
 
+	// Defensive copy constructor: prevents external mutation of internal deck state
+	Deck(Deck other) {
+		this.cards = new ArrayList<>(other.cards);
+		this.random = new Random();
+	}
+
 	public void shuffle() {
 		Collections.shuffle(this.cards, this.random);
 	}

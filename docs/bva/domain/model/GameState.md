@@ -184,7 +184,7 @@ cases:
 
 | test_Name                             | State of the System | Expected output | Implemented?       |
 |---------------------------------------|---------------------|-----------------|--------------------|
-| isDeckEmpty_EmptyDeck_ReturnsTrue     | empty deck          | true            | :cross_mark:       |
+| isDeckEmpty_EmptyDeck_ReturnsTrue     | empty deck          | true            | :white_check_mark: |
 | isDeckEmpty_NonEmptyDeck_ReturnsFalse | deck with 1+ cards  | false           | :white_check_mark: |
 
 
