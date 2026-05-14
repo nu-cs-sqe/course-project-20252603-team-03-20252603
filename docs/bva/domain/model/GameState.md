@@ -82,7 +82,7 @@ cases:
 | test_Name                                    | State of the System   | Expected output      | Implemented?       |
 |----------------------------------------------|-----------------------|----------------------|--------------------|
 | endGame_ActiveGame_SetsStatusEnded           | status = ACTIVE       | isActive() = false   | :white_check_mark: |
-| endGame_AlreadyEnded_RemainsEnded            | status = ENDED        | isActive() = false   | :cross_mark:       |
+| endGame_AlreadyEnded_RemainsEnded            | status = ENDED        | isActive() = false   | :white_check_mark: |
 
 
 

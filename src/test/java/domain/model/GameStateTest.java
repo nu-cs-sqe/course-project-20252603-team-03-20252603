@@ -26,4 +26,11 @@ public class GameStateTest {
 		gs.endGame();
 		assertFalse(gs.isActive());
 	}
+
+	@Test
+	public void endGame_AlreadyEnded_RemainsEnded() {
+		GameState gs = new GameState(GameStatus.ENDED);
+		gs.endGame();
+		assertFalse(gs.isActive());
+	}
 }
