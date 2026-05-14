@@ -166,11 +166,11 @@ cases:
 - one card → returns that card; deck becomes empty
 - more than one card → returns top card; deck size decrements by 1
 
-| test_Name                                           | State of the System | Expected output                     | Implemented? |
-|-----------------------------------------------------|---------------------|-------------------------------------|--------------|
-| drawFromDeck_EmptyDeck_ThrowsIllegalStateException  | empty deck          | IllegalStateException               | :cross_mark: |
-| drawFromDeck_OneCard_ReturnsCardAndEmptiesDeck      | deck with 1 card    | that card; deck is empty            | :cross_mark: |
-| drawFromDeck_MultipleCards_ReturnsTopCard           | deck with 2+ cards  | top card; deck size decrements by 1 | :cross_mark: |
+| test_Name                                           | State of the System | Expected output                     | Implemented?       |
+|-----------------------------------------------------|---------------------|-------------------------------------|--------------------|
+| drawFromDeck_EmptyDeck_ThrowsIllegalStateException  | empty deck          | IllegalStateException               | :white_check_mark: |
+| drawFromDeck_OneCard_ReturnsCardAndEmptiesDeck      | deck with 1 card    | that card; deck is empty            | :cross_mark:       |
+| drawFromDeck_MultipleCards_ReturnsTopCard           | deck with 2+ cards  | top card; deck size decrements by 1 | :cross_mark:       |
 
 
 

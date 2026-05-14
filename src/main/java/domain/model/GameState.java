@@ -47,7 +47,10 @@ public class GameState {
 	}
 
 	public Card drawFromDeck() {
-		return null;
+		if (deck.isEmpty()) {
+			throw new IllegalStateException("Cannot draw from an empty deck");
+		}
+		return deck.drawTop();
 	}
 
 	public boolean isDeckEmpty() {

@@ -100,4 +100,10 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), multiCardDeck());
 		assertDoesNotThrow(gs::shuffleDeck);
 	}
+
+	@Test
+	public void drawFromDeck_EmptyDeck_ThrowsIllegalStateException() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		assertThrows(IllegalStateException.class, gs::drawFromDeck);
+	}
 }
