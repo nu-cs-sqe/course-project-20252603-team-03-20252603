@@ -26,6 +26,9 @@ public class TurnState {
 	}
 
 	public void setPendingAction(Card card) {
+		if (card == null) {
+			throw new IllegalArgumentException("card must not be null");
+		}
 		pendingAction = card;
 	}
 

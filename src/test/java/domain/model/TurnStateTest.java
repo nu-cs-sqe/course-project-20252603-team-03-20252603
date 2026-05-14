@@ -103,6 +103,12 @@ public class TurnStateTest {
 	}
 
 	@Test
+	void setPendingAction_NullCard_ThrowsIllegalArgumentException() {
+		TurnState turnState = new TurnState();
+		assertThrows(IllegalArgumentException.class, () -> turnState.setPendingAction(null));
+	}
+
+	@Test
 	void clearPendingAction_WhenSet_ClearsToEmpty() {
 		TurnState turnState = new TurnState();
 		turnState.setPendingAction(anyCard());
