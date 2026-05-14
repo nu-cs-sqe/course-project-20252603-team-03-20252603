@@ -17,7 +17,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerInteractionHelperTest {
-	private final long RANDOM_SEED_GENERATOR_NUMBER = 42L;
+	private static final long RANDOM_SEED_GENERATOR_NUMBER = 42L;
 
 	private static Card skipCard() {
 		return new Card(CardType.SKIP, CardName.SKIP, new SkipAction());

@@ -11,7 +11,7 @@ In order to request for merge (PR):
 - check generated reports and fix errors:
   - checkstyle report: [main.html](../../build/reports/checkstyle/main.html) and [test.html](../../build/reports/checkstyle/test.html)
   - code coverage: [index.html](../../build/reports/jacoco/index.html) and [index.html](../../build/reports/pitest/index.html) --> Jacoco and PiTest Mutants
-  - spotbugs: [spotbugs.html](../../build/reports/spotbugs/spotbugs.html) --> spotbugs.
+  - spotbugs: [spotbugs.html](../../build/reports/spotbugs/spotbugs.html) and [spotbugsTest.html](../../build/reports/spotbugs/spotbugsTest.html) --> spotbugs.
 - ensure the class/feature you are adding has zero errors and is 100% covered on the above reports
 - ensure all tests are passing.
 - ensure the PR is descriptive.

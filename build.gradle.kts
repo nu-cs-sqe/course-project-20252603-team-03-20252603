@@ -85,6 +85,14 @@ tasks.spotbugsMain {
     }
 }
 
+tasks.spotbugsTest {
+    reports.create("html") {
+        required = true
+        outputLocation = layout.buildDirectory.file("reports/spotbugs/spotbugsTest.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
+
 tasks.jacocoTestReport {
     reports {
         xml.required = false
