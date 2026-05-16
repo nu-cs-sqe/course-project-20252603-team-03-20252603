@@ -111,11 +111,11 @@ cases:
 - one player → same player remains current after advance
 - two or more players → front player moves to back; second player becomes current
 
-| test_Name                                                    | State of the System | Expected output                            | Implemented? |
-|--------------------------------------------------------------|---------------------|--------------------------------------------|--------------|
-| advancePlayer_OnePlayer_SamePlayerRemainsCurrentPlayer       | 1 active player     | getCurrentPlayer() returns same player     | :cross_mark: |
-| advancePlayer_MultiplePlayers_NextPlayerBecomesCurrentPlayer | 2+ active players   | getCurrentPlayer() returns second player   | :cross_mark: |
-| advancePlayer_MultiplePlayers_PreviousCurrentMovesToBack     | 2+ active players   | prior front player is now at back of queue | :cross_mark: |
+| test_Name                                                    | State of the System | Expected output                            | Implemented?       |
+|--------------------------------------------------------------|---------------------|--------------------------------------------|--------------------|
+| advancePlayer_OnePlayer_SamePlayerRemainsCurrentPlayer       | 1 active player     | getCurrentPlayer() returns same player     | :white_check_mark: |
+| advancePlayer_MultiplePlayers_NextPlayerBecomesCurrentPlayer | 2+ active players   | getCurrentPlayer() returns second player   | :cross_mark:       |
+| advancePlayer_MultiplePlayers_PreviousCurrentMovesToBack     | 2+ active players   | prior front player is now at back of queue | :cross_mark:       |
 
 
 

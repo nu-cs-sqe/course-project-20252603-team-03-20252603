@@ -214,4 +214,12 @@ public class GameStateTest {
 		GameState gs = new GameState(List.of(front, second), emptyDeck());
 		assertEquals(front, gs.getCurrentPlayer());
 	}
+
+	@Test
+	public void advancePlayer_OnePlayer_SamePlayerRemainsCurrentPlayer() {
+		Player player = new Player("p1", "Mercy");
+		GameState gs = new GameState(List.of(player), emptyDeck());
+		gs.advancePlayer();
+		assertEquals(player, gs.getCurrentPlayer());
+	}
 }

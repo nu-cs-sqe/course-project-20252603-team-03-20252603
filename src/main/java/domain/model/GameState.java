@@ -40,6 +40,7 @@ public class GameState {
 	}
 
 	public void advancePlayer() {
+		activePlayers.offer(activePlayers.poll());
 	}
 
 	public void eliminateCurrentPlayer() {
