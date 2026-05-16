@@ -417,4 +417,10 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), deck);
 		assertEquals(List.of(first, second, third), gs.peekTopOfDeck(THREE_CARD_DECK_SIZE));
 	}
+
+	@Test
+	public void peekTopOfDeck_NExceedsDeckSize_ThrowsIllegalArgumentException() {
+		GameState gs = new GameState(twoPlayers(), multiCardDeck());
+		assertThrows(IllegalArgumentException.class, () -> gs.peekTopOfDeck(THREE_CARD_DECK_SIZE));
+	}
 }
