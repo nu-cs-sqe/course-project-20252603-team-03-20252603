@@ -264,10 +264,10 @@ cases:
 - card is in hand → removed; hand size decrements by 1
 - card is not in hand → hand unchanged
 
-| test_Name                                               | State of the System            | Expected output         | Implemented? |
-|---------------------------------------------------------|--------------------------------|-------------------------|--------------|
-| removeCardFromCurrentPlayer_CardInHand_RemovesCard      | card is in current player hand | hand no longer has card | :cross_mark: |
-| removeCardFromCurrentPlayer_CardNotInHand_HandUnchanged | card not in hand               | hand unchanged          | :cross_mark: |
+| test_Name                                               | State of the System            | Expected output         | Implemented?       |
+|---------------------------------------------------------|--------------------------------|-------------------------|--------------------|
+| removeCardFromCurrentPlayer_CardInHand_RemovesCard      | card is in current player hand | hand no longer has card | :white_check_mark: |
+| removeCardFromCurrentPlayer_CardNotInHand_HandUnchanged | card not in hand               | hand unchanged          | :cross_mark:       |
 
 
 

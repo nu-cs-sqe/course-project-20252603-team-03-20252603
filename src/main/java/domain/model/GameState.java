@@ -88,6 +88,7 @@ public class GameState {
 	}
 
 	public void removeCardFromCurrentPlayer(Card card) {
+		getCurrentPlayer().removeCard(card);
 	}
 
 	public boolean currentPlayerHasCard(CardType type) {
