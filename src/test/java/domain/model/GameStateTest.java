@@ -186,4 +186,12 @@ public class GameStateTest {
 		assertEquals(1, gs.getDiscardPileSize());
 	}
 
+	@Test
+	public void discardCard_NonEmptyPile_AppendsCard() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		gs.discardCard(new Card(CardType.SEE_THE_FUTURE, CardName.SEE_THE_FUTURE, new SkipAction()));
+		gs.discardCard(new Card(CardType.SEE_THE_FUTURE, CardName.SEE_THE_FUTURE, new SkipAction()));
+		assertEquals(2, gs.getDiscardPileSize());
+	}
+
 }
