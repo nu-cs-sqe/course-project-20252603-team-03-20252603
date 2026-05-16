@@ -200,4 +200,11 @@ public class GameStateTest {
 		assertThrows(IllegalStateException.class, gs::getCurrentPlayer);
 	}
 
+	@Test
+	public void getCurrentPlayer_OnePlayer_ReturnsThatPlayer() {
+		Player player = new Player("p1", "Caroline");
+		GameState gs = new GameState(List.of(player), emptyDeck());
+		assertEquals(player, gs.getCurrentPlayer());
+	}
+
 }
