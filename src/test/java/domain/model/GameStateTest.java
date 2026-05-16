@@ -279,4 +279,10 @@ public class GameStateTest {
 		gs.removeCardFromCurrentPlayer(cardNotInHand);
 		assertEquals(1, gs.getCurrentPlayer().getHand().size());
 	}
+
+	@Test
+	public void currentPlayerHasCard_EmptyHand_ReturnsFalse() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		assertFalse(gs.currentPlayerHasCard(CardType.SKIP));
+	}
 }

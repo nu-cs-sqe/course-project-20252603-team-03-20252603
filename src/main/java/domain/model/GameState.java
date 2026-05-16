@@ -92,7 +92,7 @@ public class GameState {
 	}
 
 	public boolean currentPlayerHasCard(CardType type) {
-		return false;
+		return getCurrentPlayer().hasCard(type);
 	}
 
 	public List<Player> getOtherActivePlayers() {

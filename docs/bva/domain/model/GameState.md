@@ -280,11 +280,11 @@ cases:
 - matching type present → true
 - no matching type → false
 
-| test_Name                                             | State of the System            | Expected output | Implemented? |
-|-------------------------------------------------------|--------------------------------|-----------------|--------------|
-| currentPlayerHasCard_EmptyHand_ReturnsFalse           | current player hand is empty   | false           | :cross_mark: |
-| currentPlayerHasCard_MatchingType_ReturnsTrue         | current player has that type   | true            | :cross_mark: |
-| currentPlayerHasCard_NoMatchingType_ReturnsFalse      | current player lacks that type | false           | :cross_mark: |
+| test_Name                                             | State of the System            | Expected output | Implemented?       |
+|-------------------------------------------------------|--------------------------------|-----------------|--------------------|
+| currentPlayerHasCard_EmptyHand_ReturnsFalse           | current player hand is empty   | false           | :white_check_mark: |
+| currentPlayerHasCard_MatchingType_ReturnsTrue         | current player has that type   | true            | :cross_mark:       |
+| currentPlayerHasCard_NoMatchingType_ReturnsFalse      | current player lacks that type | false           | :cross_mark:       |
 
 
 
