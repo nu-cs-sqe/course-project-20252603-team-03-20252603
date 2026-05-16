@@ -384,4 +384,13 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), emptyDeck());
 		assertThrows(IllegalStateException.class, () -> gs.insertPendingCardAt(0));
 	}
+
+	@Test
+	public void insertPendingCardAt_ValidPosition_InsertsCardIntoDeck() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		gs.turnState().setPendingAction(skipCard);
+		gs.insertPendingCardAt(0);
+		assertEquals(1, gs.getDeckSize());
+	}
 }

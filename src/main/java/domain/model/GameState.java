@@ -122,6 +122,7 @@ public class GameState {
 		if (turnState.pendingAction().isEmpty()) {
 			throw new IllegalStateException("No pending action");
 		}
+		insertIntoDeck(turnState.pendingAction().get(), position);
 	}
 
 	@SuppressFBWarnings("EI_EXPOSE_REP")
