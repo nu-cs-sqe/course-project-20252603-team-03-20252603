@@ -1,16 +1,14 @@
-package ui;
+package controller;
 
 import domain.model.GameState;
 import domain.factory.DeckFactory;
 import domain.factory.ComboValidator;
 import domain.input.IPlayerInput;
 import domain.model.Card;
+import ui.IGameDisplay;
 
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("UUF_UNUSED_FIELD")
 public class GameController {
 	private GameState gameState;
 	private IGameDisplay display;
