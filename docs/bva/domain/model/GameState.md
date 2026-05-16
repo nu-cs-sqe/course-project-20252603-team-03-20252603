@@ -299,7 +299,7 @@ cases:
 | test_Name                                                        | State of the System | Expected output                    | Implemented?       |
 |------------------------------------------------------------------|---------------------|------------------------------------|--------------------|
 | getOtherActivePlayers_TwoPlayers_ReturnsListWithOnePlayer        | 2 active players    | list containing the other player   | :white_check_mark: |
-| getOtherActivePlayers_MultiplePlayers_ReturnsAllButCurrent       | 3+ active players   | list of all players except current | :cross_mark:       |
+| getOtherActivePlayers_MultiplePlayers_ReturnsAllButCurrent       | 3+ active players   | list of all players except current | :white_check_mark: |
 
 
 

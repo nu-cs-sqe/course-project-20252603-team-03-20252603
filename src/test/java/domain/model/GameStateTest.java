@@ -307,4 +307,13 @@ public class GameStateTest {
 		GameState gs = new GameState(List.of(first, second), emptyDeck());
 		assertEquals(List.of(second), gs.getOtherActivePlayers());
 	}
+
+	@Test
+	public void getOtherActivePlayers_MultiplePlayers_ReturnsAllButCurrent() {
+		Player first = new Player("p1", "Caroline");
+		Player second = new Player("p2", "Mercy");
+		Player third = new Player("p3", "Chibu");
+		GameState gs = new GameState(List.of(first, second, third), emptyDeck());
+		assertEquals(List.of(second, third), gs.getOtherActivePlayers());
+	}
 }
