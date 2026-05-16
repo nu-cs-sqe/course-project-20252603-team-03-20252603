@@ -1,4 +1,4 @@
-package ui;
+package controller;
 
 import domain.model.GameState;
 import domain.model.Player;
@@ -11,4 +11,6 @@ public interface IGameDisplay {
 	void showMessage(String message);
 
 	void showWinner(Player player);
+
+	void showCurrentPlayer(Player player);
 }

@@ -1,18 +1,19 @@
 package controller;
 
+import domain.enums.PlayerChoice;
+import domain.factory.PlayerInteractionHelper;
 import domain.model.GameState;
 import domain.factory.DeckFactory;
 import domain.factory.ComboValidator;
-import domain.input.IPlayerInput;
 import domain.model.Card;
-import ui.IGameDisplay;
+import domain.model.Player;
 
 import java.util.List;
+import java.util.Random;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("UUF_UNUSED_FIELD")
-
+@SuppressFBWarnings({"UUF_UNUSED_FIELD", "URF_UNREAD_FIELD", "UWF_UNWRITTEN_FIELD", "NP_UNWRITTEN_FIELD"})
 public class GameController {
 	private GameState gameState;
 	private IGameDisplay display;
@@ -20,11 +21,78 @@ public class GameController {
 	private DeckFactory deckFactory;
 	private ComboValidator comboValidator;
 
+	public GameController(IGameDisplay display, IPlayerInput input) {
+		this.display = display;
+		this.input = input;
+
+		PlayerInteractionHelper playerInteractionHelper = new PlayerInteractionHelper(input, new Random());
+		ComboValidator comboValidator = new ComboValidator(playerInteractionHelper);
+
+		this.comboValidator = comboValidator;
+		// gamestate is initialised by start game
+		//deck factorty is also initialised by start game
+	}
+
 	public void startGame(int numPlayers) {
 	}
 
 	public void playATurn() {
+		if (!readyToPlayATurn()) {
+			throw new IllegalStateException("Game state is not ready to play a turn");
+		}
+		Player currentPlayer = gameState.getCurrentPlayer();
+		display.showCurrentPlayer(currentPlayer);
+		int turnsForNextPlayer = gameState.turnState().getDefaultTurns();
+		while (hasToPlayATurn()) {
+			PlayerChoice playerChoice = input.promptPlayerChoice();
+			if (playerChoice == PlayerChoice.PLAY_CARD) {
+				List<Card> chosenCards = input.promptCardSelection(currentPlayer);
+				playCard(chosenCards);
+			} else if (playerChoice == PlayerChoice.DONE_PLAYING_CARDS) {
+				handleDrawingCards();
+				turnsForNextPlayer = handleTurnTaking();
+			}
+		}
+		resetGameState(turnsForNextPlayer);
+		advanceGameToNextPlayer();
 	}
+
+
+	boolean readyToPlayATurn() {
+		return true;
+	}
+
+	boolean hasToPlayATurn() {
+		if (gameState.turnState().isAttacking()){
+			return false;
+		}
+		else {
+			int turnsLeft = gameState.turnState().turnsRemaining();
+			return turnsLeft != 0;
+		}
+	}
+
+	private void handleDrawingCards() {
+		boolean shouldSkipDraw = gameState.turnState().shouldSkipDraw();
+		if (!shouldSkipDraw) {
+			drawCard();
+		};
+	}
+
+	private int handleTurnTaking() { return 0;}
+
+	private void resetGameState(int turnsForNextPlayer) {};
+
+	private void advanceGameToNextPlayer() {};
+
+
+
+
+
+
+
+
+
 
 	public void playCard(List<Card> cards) {
 	}

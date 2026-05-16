@@ -1,6 +1,7 @@
-package domain.input;
+package controller;
 
 import domain.enums.CardType;
+import domain.enums.PlayerChoice;
 import domain.model.Card;
 import domain.model.Player;
 
@@ -18,4 +19,6 @@ public interface IPlayerInput {
 	Player promptTargetSelection(List<Player> candidates);
 
 	CardType promptCardType();
+
+	PlayerChoice promptPlayerChoice();
 }

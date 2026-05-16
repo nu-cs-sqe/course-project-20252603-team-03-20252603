@@ -71,4 +71,8 @@ public class TurnState {
 		pendingAction = null;
 		nopeCount = 0;
 	}
+
+	public int getDefaultTurns() {
+		return DEFAULT_TURNS;
+	}
 }
