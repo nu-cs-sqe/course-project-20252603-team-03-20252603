@@ -55,6 +55,13 @@ public class Deck {
 		return cards.isEmpty();
 	}
 
+	public List<Card> peekTop(int n) {
+		if (n > cards.size()) {
+			throw new IllegalArgumentException("Error: card number requested exceeds size of deck");
+		}
+		return Collections.unmodifiableList(cards.subList(0, n));
+	}
+
 	public int countCardsByName(CardName cardName) {
 		int count = 0;
 		for (Card card : cards) {

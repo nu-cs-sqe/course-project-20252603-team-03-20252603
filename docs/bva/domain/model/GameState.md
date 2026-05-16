@@ -312,11 +312,11 @@ cases:
 - n within deck size → returns top n cards without removing them
 - n exceeds deck size → throw IllegalArgumentException
 
-| test_Name                                                     | State of the System       | Expected output          | Implemented? |
-|---------------------------------------------------------------|---------------------------|--------------------------|--------------|
-| peekTopOfDeck_ZeroCards_ReturnsEmptyList                      | any deck, n = 0           | empty list               | :cross_mark: |
-| peekTopOfDeck_NWithinDeckSize_ReturnsTopNCards                | deck with 3+ cards, n = 3 | list of top 3 cards      | :cross_mark: |
-| peekTopOfDeck_NExceedsDeckSize_ThrowsIllegalArgumentException | deck with 2 cards, n = 3  | IllegalArgumentException | :cross_mark: |
+| test_Name                                                     | State of the System       | Expected output          | Implemented?       |
+|---------------------------------------------------------------|---------------------------|--------------------------|--------------------|
+| peekTopOfDeck_ZeroCards_ReturnsEmptyList                      | any deck, n = 0           | empty list               | :white_check_mark: |
+| peekTopOfDeck_NWithinDeckSize_ReturnsTopNCards                | deck with 3+ cards, n = 3 | list of top 3 cards      | :cross_mark:       |
+| peekTopOfDeck_NExceedsDeckSize_ThrowsIllegalArgumentException | deck with 2 cards, n = 3  | IllegalArgumentException | :cross_mark:       |
 
 
 

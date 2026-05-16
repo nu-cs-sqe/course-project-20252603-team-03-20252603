@@ -401,4 +401,10 @@ public class GameStateTest {
 		gs.turnState().setPendingAction(skipCard);
 		assertThrows(IndexOutOfBoundsException.class, () -> gs.insertPendingCardAt(1));
 	}
+
+	@Test
+	public void peekTopOfDeck_ZeroCards_ReturnsEmptyList() {
+		GameState gs = new GameState(twoPlayers(), multiCardDeck());
+		assertEquals(List.of(), gs.peekTopOfDeck(0));
+	}
 }

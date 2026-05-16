@@ -111,7 +111,7 @@ public class GameState {
 	}
 
 	public List<Card> peekTopOfDeck(int n) {
-		return null;
+		return deck.peekTop(n);
 	}
 
 	public int getDeckSize() {
