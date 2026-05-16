@@ -48,10 +48,11 @@ public class GameState {
 		if (activePlayers.size() == 1) {
 			throw new IllegalStateException("Error: cannot eliminate the last remaining player");
 		}
+		eliminatedPlayers.add(activePlayers.poll());
 	}
 
 	public int activePlayerCount() {
-		return 0;
+		return activePlayers.size();
 	}
 
 	public Card drawFromDeck() {

@@ -323,4 +323,11 @@ public class GameStateTest {
 		GameState gs = new GameState(List.of(player), emptyDeck());
 		assertThrows(IllegalStateException.class, gs::eliminateCurrentPlayer);
 	}
+
+	@Test
+	public void eliminateCurrentPlayer_TwoPlayers_ActiveCountBecomesOne() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		gs.eliminateCurrentPlayer();
+		assertEquals(1, gs.activePlayerCount());
+	}
 }
