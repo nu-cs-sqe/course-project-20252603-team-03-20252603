@@ -69,6 +69,7 @@ public class GameState {
 	}
 
 	public void discardCard(Card card) {
+
 	}
 
 	public void addCardToCurrentPlayer(Card card) {

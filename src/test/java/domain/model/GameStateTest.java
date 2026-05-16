@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
 	private static final int THREE_CARD_DECK_SIZE = 3;
+	private static final int CARD_INDEX_IN_DECK = 3;
 
 	private List<Player> twoPlayers() {
 		return List.of(new Player("p1", "Caroline"), new Player("p2", "Mercy"));
@@ -162,6 +163,13 @@ public class GameStateTest {
 		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
 		gs.insertIntoDeck(skipCard, 1);
 		assertEquals(THREE_CARD_DECK_SIZE, gs.getDeckSize());
+	}
+
+	@Test
+	public void insertIntoDeck_NonEmptyDeckIndexPastBounds_ThrowsIndexOutOfBoundsException() {
+		GameState gs = new GameState(twoPlayers(), multiCardDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		assertThrows(IndexOutOfBoundsException.class, () -> gs.insertIntoDeck(skipCard, CARD_INDEX_IN_DECK));
 	}
 
 }
