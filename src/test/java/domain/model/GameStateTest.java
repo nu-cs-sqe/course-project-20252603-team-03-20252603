@@ -250,4 +250,13 @@ public class GameStateTest {
 		int numCardsPlayerHas = gs.getCurrentPlayer().getHand().size();
 		assertEquals(1, numCardsPlayerHas);
 	}
+
+	@Test
+	public void addCardToCurrentPlayer_NonEmptyHand_AppendsCard() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		gs.addCardToCurrentPlayer(new Card(CardType.SKIP, CardName.SKIP, new SkipAction()));
+		gs.addCardToCurrentPlayer(new Card(CardType.SKIP, CardName.SKIP, new SkipAction()));
+		int numCardsPlayerHas = gs.getCurrentPlayer().getHand().size();
+		assertEquals(2, numCardsPlayerHas);
+	}
 }
