@@ -11,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
+	private static final int THREE_CARD_DECK_SIZE = 3;
 
 	private List<Player> twoPlayers() {
 		return List.of(new Player("p1", "Caroline"), new Player("p2", "Mercy"));
@@ -153,6 +154,14 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), emptyDeck());
 		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
 		assertThrows(IndexOutOfBoundsException.class, () -> gs.insertIntoDeck(skipCard, 1));
+	}
+
+	@Test
+	public void insertIntoDeck_NonEmptyDeckValidIndex_InsertsCard() {
+		GameState gs = new GameState(twoPlayers(), multiCardDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		gs.insertIntoDeck(skipCard, 1);
+		assertEquals(THREE_CARD_DECK_SIZE, gs.getDeckSize());
 	}
 
 }
