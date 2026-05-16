@@ -299,4 +299,12 @@ public class GameStateTest {
 		gs.addCardToCurrentPlayer(new Card(CardType.SKIP, CardName.SKIP, new SkipAction()));
 		assertFalse(gs.currentPlayerHasCard(CardType.SEE_THE_FUTURE));
 	}
+
+	@Test
+	public void getOtherActivePlayers_TwoPlayers_ReturnsListWithOnePlayer() {
+		Player first = new Player("p1", "Caroline");
+		Player second = new Player("p2", "Mercy");
+		GameState gs = new GameState(List.of(first, second), emptyDeck());
+		assertEquals(List.of(second), gs.getOtherActivePlayers());
+	}
 }

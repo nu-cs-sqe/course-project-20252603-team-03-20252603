@@ -96,7 +96,9 @@ public class GameState {
 	}
 
 	public List<Player> getOtherActivePlayers() {
-		return Collections.emptyList();
+		List<Player> others = new ArrayList<>(activePlayers);
+		others.remove(getCurrentPlayer());
+		return Collections.unmodifiableList(others);
 	}
 
 	public List<Card> peekTopOfDeck(int n) {

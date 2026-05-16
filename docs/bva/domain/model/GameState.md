@@ -296,10 +296,10 @@ cases:
 - two players → list with the one other player
 - three or more players → list with all players except current
 
-| test_Name                                                        | State of the System | Expected output                    | Implemented? |
-|------------------------------------------------------------------|---------------------|------------------------------------|--------------|
-| getOtherActivePlayers_TwoPlayers_ReturnsListWithOnePlayer        | 2 active players    | list containing the other player   | :cross_mark: |
-| getOtherActivePlayers_MultiplePlayers_ReturnsAllButCurrent       | 3+ active players   | list of all players except current | :cross_mark: |
+| test_Name                                                        | State of the System | Expected output                    | Implemented?       |
+|------------------------------------------------------------------|---------------------|------------------------------------|--------------------|
+| getOtherActivePlayers_TwoPlayers_ReturnsListWithOnePlayer        | 2 active players    | list containing the other player   | :white_check_mark: |
+| getOtherActivePlayers_MultiplePlayers_ReturnsAllButCurrent       | 3+ active players   | list of all players except current | :cross_mark:       |
 
 
 
