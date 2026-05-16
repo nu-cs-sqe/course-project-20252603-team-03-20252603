@@ -292,4 +292,11 @@ public class GameStateTest {
 		gs.addCardToCurrentPlayer(new Card(CardType.SKIP, CardName.SKIP, new SkipAction()));
 		assertTrue(gs.currentPlayerHasCard(CardType.SKIP));
 	}
+
+	@Test
+	public void currentPlayerHasCard_NoMatchingType_ReturnsFalse() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		gs.addCardToCurrentPlayer(new Card(CardType.SKIP, CardName.SKIP, new SkipAction()));
+		assertFalse(gs.currentPlayerHasCard(CardType.SEE_THE_FUTURE));
+	}
 }

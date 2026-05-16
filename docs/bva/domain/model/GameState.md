@@ -284,7 +284,7 @@ cases:
 |-------------------------------------------------------|--------------------------------|-----------------|--------------------|
 | currentPlayerHasCard_EmptyHand_ReturnsFalse           | current player hand is empty   | false           | :white_check_mark: |
 | currentPlayerHasCard_MatchingType_ReturnsTrue         | current player has that type   | true            | :white_check_mark: |
-| currentPlayerHasCard_NoMatchingType_ReturnsFalse      | current player lacks that type | false           | :cross_mark:       |
+| currentPlayerHasCard_NoMatchingType_ReturnsFalse      | current player lacks that type | false           | :white_check_mark: |
 
 
 
