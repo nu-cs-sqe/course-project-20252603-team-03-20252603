@@ -393,4 +393,12 @@ public class GameStateTest {
 		gs.insertPendingCardAt(0);
 		assertEquals(1, gs.getDeckSize());
 	}
+
+	@Test
+	public void insertPendingCardAt_InvalidPosition_ThrowsIndexOutOfBoundsException() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		gs.turnState().setPendingAction(skipCard);
+		assertThrows(IndexOutOfBoundsException.class, () -> gs.insertPendingCardAt(1));
+	}
 }

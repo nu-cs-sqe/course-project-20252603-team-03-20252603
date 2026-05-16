@@ -350,7 +350,7 @@ cases:
 |-------------------------------------------------------------------------|----------------------------------------|---------------------------|--------------------|
 | insertPendingCardAt_NoPendingAction_ThrowsIllegalStateException         | no pending action in turnState         | IllegalStateException     | :white_check_mark: |
 | insertPendingCardAt_ValidPosition_InsertsCardIntoDeck                   | pending action set, valid position     | card in deck at position  | :white_check_mark: |
-| insertPendingCardAt_InvalidPosition_ThrowsIndexOutOfBoundsException     | pending action set, invalid position   | IndexOutOfBoundsException | :cross_mark:       |
+| insertPendingCardAt_InvalidPosition_ThrowsIndexOutOfBoundsException     | pending action set, invalid position   | IndexOutOfBoundsException | :white_check_mark: |
 
 
 
