@@ -407,4 +407,14 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), multiCardDeck());
 		assertEquals(List.of(), gs.peekTopOfDeck(0));
 	}
+
+	@Test
+	public void peekTopOfDeck_NWithinDeckSize_ReturnsTopNCards() {
+		Card first = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		Card second = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		Card third = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		Deck deck = new Deck(List.of(first, second, third));
+		GameState gs = new GameState(twoPlayers(), deck);
+		assertEquals(List.of(first, second, third), gs.peekTopOfDeck(THREE_CARD_DECK_SIZE));
+	}
 }
