@@ -133,4 +133,11 @@ public class GameStateTest {
 		assertEquals(1, gs.getDeckSize());
 	}
 
+	@Test
+	public void insertIntoDeck_InvalidIndex_ThrowsIndexOutOfBoundsException() {
+		GameState gs = new GameState(twoPlayers(), multiCardDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		assertThrows(IndexOutOfBoundsException.class, () -> gs.insertIntoDeck(skipCard, -1));
+	}
+
 }

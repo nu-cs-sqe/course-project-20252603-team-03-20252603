@@ -58,6 +58,9 @@ public class GameState {
 	}
 
 	public void insertIntoDeck(Card card, int index) {
+		if (index < 0) {
+			throw new IndexOutOfBoundsException("Error: index is less than 0");
+		}
 	}
 
 	public void shuffleDeck() {
