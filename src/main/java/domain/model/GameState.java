@@ -55,6 +55,10 @@ public class GameState {
 		return activePlayers.size();
 	}
 
+	public List<Player> getEliminatedPlayers() {
+		return Collections.unmodifiableList(eliminatedPlayers);
+	}
+
 	public Card drawFromDeck() {
 		if (deck.isEmpty()) {
 			throw new IllegalStateException("Cannot draw from an empty deck");

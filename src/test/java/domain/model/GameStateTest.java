@@ -339,4 +339,13 @@ public class GameStateTest {
 		gs.eliminateCurrentPlayer();
 		assertEquals(second, gs.getCurrentPlayer());
 	}
+
+	@Test
+	public void eliminateCurrentPlayer_TwoPlayers_PlayerMovesToEliminatedList() {
+		Player first = new Player("p1", "Caroline");
+		Player second = new Player("p2", "Mercy");
+		GameState gs = new GameState(List.of(first, second), emptyDeck());
+		gs.eliminateCurrentPlayer();
+		assertEquals(List.of(first), gs.getEliminatedPlayers());
+	}
 }
