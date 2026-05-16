@@ -236,7 +236,7 @@ cases:
 | test_Name                                           | State of the System        | Expected output              | Implemented?       |
 |-----------------------------------------------------|----------------------------|------------------------------|--------------------|
 | discardCard_NullCard_ThrowsIllegalArgumentException | any state, null card       | IllegalArgumentException     | :white_check_mark: |
-| discardCard_EmptyPile_AddsCard                      | empty discard pile         | discard pile size = 1        | :cross_mark:       |
+| discardCard_EmptyPile_AddsCard                      | empty discard pile         | discard pile size = 1        | :white_check_mark: |
 | discardCard_NonEmptyPile_AppendsCard                | discard pile with 1+ cards | discard pile size increments | :cross_mark:       |
 
 

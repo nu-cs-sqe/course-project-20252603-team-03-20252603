@@ -177,4 +177,13 @@ public class GameStateTest {
 		GameState gs = new GameState(twoPlayers(), emptyDeck());
 		assertThrows(IllegalArgumentException.class, () -> gs.discardCard(null));
 	}
+
+	@Test
+	public void discardCard_EmptyPile_AddsCard() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		Card skipCard = new Card(CardType.SKIP, CardName.SKIP, new SkipAction());
+		gs.discardCard(skipCard);
+		assertEquals(1, gs.getDiscardPileSize());
+	}
+
 }

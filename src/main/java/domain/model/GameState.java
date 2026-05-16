@@ -3,6 +3,7 @@ package domain.model;
 import domain.enums.CardType;
 import domain.enums.GameStatus;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
@@ -21,6 +22,7 @@ public class GameState {
 	public GameState(List<Player> players, Deck deck) {
 		this.status = GameStatus.ACTIVE;
 		this.deck = new Deck(deck);
+		this.discardPile = new ArrayList<>();
 		this.turnState = new TurnState();
 	}
 
@@ -72,6 +74,11 @@ public class GameState {
 		if (card == null) {
 			throw new IllegalArgumentException("Card cannot be null");
 		}
+		discardPile.add(card);
+	}
+
+	public int getDiscardPileSize() {
+		return discardPile.size();
 	}
 
 	public void addCardToCurrentPlayer(Card card) {
