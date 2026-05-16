@@ -378,4 +378,10 @@ public class GameStateTest {
 		gs.eliminateCurrentPlayer();
 		assertEquals(List.of(first), gs.getEliminatedPlayers());
 	}
+
+	@Test
+	public void insertPendingCardAt_NoPendingAction_ThrowsIllegalStateException() {
+		GameState gs = new GameState(twoPlayers(), emptyDeck());
+		assertThrows(IllegalStateException.class, () -> gs.insertPendingCardAt(0));
+	}
 }

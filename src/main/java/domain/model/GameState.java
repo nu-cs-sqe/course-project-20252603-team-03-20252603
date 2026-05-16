@@ -119,6 +119,9 @@ public class GameState {
 	}
 
 	public void insertPendingCardAt(int position) {
+		if (turnState.pendingAction().isEmpty()) {
+			throw new IllegalStateException("No pending action");
+		}
 	}
 
 	@SuppressFBWarnings("EI_EXPOSE_REP")
