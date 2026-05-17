@@ -79,7 +79,6 @@ public class GameController {
 		}
 
 		return true;
-
 	}
 
 	boolean hasToPlayATurn() {

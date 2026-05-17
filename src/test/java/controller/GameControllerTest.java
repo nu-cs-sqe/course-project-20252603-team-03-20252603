@@ -1,10 +1,14 @@
 package controller;
 
+import domain.enums.PlayerChoice;
+import domain.model.Card;
 import domain.model.GameState;
 import domain.model.Player;
 import domain.model.TurnState;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -424,5 +428,100 @@ public class GameControllerTest {
 		assertTrue(controller.readyToPlayATurn());
 
 		EasyMock.verify(mockGameState, mockPlayer);
+	}
+
+	@Test
+	void playATurn_notReadyToPlayATurn_throwsException() {
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		EasyMock.expect(mockGameState.isActive()).andReturn(false);
+		EasyMock.replay(mockGameState);
+
+		GameController controller = createGameController(mockGameState);
+
+		assertThrows(IllegalStateException.class, controller::playATurn);
+
+		EasyMock.verify(mockGameState);
+	}
+
+	@Test
+	void playATurn_ReadyToPlayATurn_DoesNotHaveToPlayATurn_NoLoopRun() {
+		IGameDisplay mockDisplay = EasyMock.createMock(IGameDisplay.class);
+		IPlayerInput mockInput = EasyMock.createMock(IPlayerInput.class);
+		TurnState mockTurnState = EasyMock.createMock(TurnState.class);
+		Player mockPlayer = EasyMock.createMock(Player.class);
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+
+		EasyMock.expect(mockGameState.isActive()).andReturn(true);
+		EasyMock.expect(mockGameState.getCurrentPlayer()).andReturn(mockPlayer).anyTimes();
+		EasyMock.expect(mockGameState.turnState()).andReturn(mockTurnState).anyTimes();
+		EasyMock.expect(mockPlayer.isActive()).andReturn(true);
+
+		EasyMock.expect(mockTurnState.isAttacking()).andReturn(true);
+
+		mockDisplay.showCurrentPlayer(mockPlayer);
+
+		mockPlayer.resetWasAttacked();
+
+		mockTurnState.reset(1);
+
+		mockGameState.advancePlayer();
+
+		EasyMock.replay(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
+
+		GameController controller = new GameController(mockDisplay, mockInput, mockGameState);
+		controller.playATurn();
+
+		EasyMock.verify(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
+	}
+
+	private void setupPlayATurnBaseExpectations(TurnState turnState, Player player, GameState gameState) {
+		EasyMock.expect(gameState.isActive()).andReturn(true);
+		EasyMock.expect(gameState.getCurrentPlayer()).andReturn(player).anyTimes();
+		EasyMock.expect(gameState.turnState()).andReturn(turnState).anyTimes();
+		EasyMock.expect(player.isActive()).andReturn(true);
+	}
+
+	@Test
+	void playATurn_ReadyToPlayATurn_HasToPlayATurn_PlayACard_OneLoopRun_PlaysCards(){
+		IGameDisplay mockDisplay = EasyMock.createMock(IGameDisplay.class);
+		IPlayerInput mockInput = EasyMock.createMock(IPlayerInput.class);
+		TurnState mockTurnState = EasyMock.createMock(TurnState.class);
+		Player mockPlayer = EasyMock.createMock(Player.class);
+		List<Card> mockCards = EasyMock.createMock(List.class);
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		setupPlayATurnBaseExpectations(mockTurnState, mockPlayer, mockGameState);
+		mockDisplay.showCurrentPlayer(mockPlayer);
+		EasyMock.expect(mockTurnState.isAttacking()).andReturn(false).andReturn(false);
+		EasyMock.expect(mockTurnState.turnsRemaining()).andReturn(1).andReturn(0);
+		EasyMock.expect(mockInput.promptPlayerChoice()).andReturn(PlayerChoice.PLAY_CARD);
+		EasyMock.expect(mockInput.promptCardSelection(mockPlayer)).andReturn(mockCards);
+		mockPlayer.resetWasAttacked();
+		mockTurnState.reset(1);
+		mockGameState.advancePlayer();
+		EasyMock.replay(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
+		new GameController(mockDisplay, mockInput, mockGameState).playATurn();
+		EasyMock.verify(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
+	}
+
+	@Test
+	void playATurn_ReadyToPlayATurn_HasToPlayATurn_DonePlaying_OneLoopRun_DrawsCardsAndTurnTaking(){
+		IGameDisplay mockDisplay = EasyMock.createMock(IGameDisplay.class);
+		IPlayerInput mockInput = EasyMock.createMock(IPlayerInput.class);
+		TurnState mockTurnState = EasyMock.createMock(TurnState.class);
+		Player mockPlayer = EasyMock.createMock(Player.class);
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		setupPlayATurnBaseExpectations(mockTurnState, mockPlayer, mockGameState);
+		mockDisplay.showCurrentPlayer(mockPlayer);
+		EasyMock.expect(mockTurnState.isAttacking()).andReturn(false).times(THREE_TURNS);
+		EasyMock.expect(mockTurnState.turnsRemaining()).andReturn(1).andReturn(0);
+		EasyMock.expect(mockInput.promptPlayerChoice()).andReturn(PlayerChoice.DONE_PLAYING_CARDS);
+		EasyMock.expect(mockTurnState.shouldSkipDraw()).andReturn(true);
+		mockTurnState.decrementTurns();
+		mockPlayer.resetWasAttacked();
+		mockTurnState.reset(1);
+		mockGameState.advancePlayer();
+		EasyMock.replay(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
+		new GameController(mockDisplay, mockInput, mockGameState).playATurn();
+		EasyMock.verify(mockGameState, mockTurnState, mockPlayer, mockDisplay, mockInput);
 	}
 }

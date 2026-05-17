@@ -129,6 +129,25 @@ spaces: none (no parameters — method purely delegates to gameState.advancePlay
 cases:
 - advancePlayer() is called on gameState
 
-| test_Name                                           | State of the System | Expected output                       | Implemented?       |
-|-----------------------------------------------------|---------------------|---------------------------------------|--------------------|
-| advanceGameToNextPlayer_CallsAdvancePlayerOnGameState | any valid gameState | gameState.advancePlayer() called once | :white_check_mark: |
+| test_Name                                             | State of the System | Expected output                         | Implemented?       |
+|-------------------------------------------------------|---------------------|-----------------------------------------|--------------------|
+| advanceGameToNextPlayer_CallsAdvancePlayerOnGameState | any valid gameState | gameState.advancePlayer() called once   | :white_check_mark: |
+
+
+
+### Method under test: `playATurn()`
+spaces: none (no parameters only game logic
+
+cases:
+- readyToPlayATurn -> true
+- readyToPlayAturn -> false
+- hasToPlayATurn = true -> one loop run
+- hasToPlayATurn = false ->no loop run
+- play a card -> plays cards
+
+| test_Name                                                                                | State of the System                                                | Expected output  | Implemented?       |
+|------------------------------------------------------------------------------------------|--------------------------------------------------------------------|------------------|--------------------|
+| playATurn_notReadyToPlayATurn_throwsException                                            | not ready to play a turn                                           | exception thrown | :white_check_mark: |
+| playATurn_ReadyToPlayATurn_DoesNotHaveToPlayATurn_NoLoopRun                              | ready to play a turn; does not have to play a turn                 | no loop run      | :white_check_mark: |
+| playATurn_ReadyToPlayATurn_HasToPlayATurn_PlayACard_OneLoopRun_PlaysCards                | ready to play a turn; has to play a turn; plays cards              | one loop run     | :white_check_mark: |
+| playATurn_ReadyToPlayATurn_HasToPlayATurn_DonePlaying_OneLoopRun_DrawsCardsAndTurnTaking | ready to play a turn; has to play a turn; draws cards, turn taking | one loop run     | :white_check_mark: |
