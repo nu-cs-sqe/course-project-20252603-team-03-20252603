@@ -233,4 +233,25 @@ public class PlayerTest {
 		player.resetWasAttacked();
 		assertFalse(player.wasAttacked());
 	}
+
+	@Test
+	void isActive_InitialState_ReturnsTrue() {
+		Player player = new Player("p1", "Alice");
+		assertTrue(player.isActive());
+	}
+
+	@Test
+	void eliminatePlayer_WhenActive_SetsToFalse() {
+		Player player = new Player("p1", "Alice");
+		player.eliminatePlayer();
+		assertFalse(player.isActive());
+	}
+
+	@Test
+	void eliminatePlayer_WhenAlreadyEliminated_RemainsInactive() {
+		Player player = new Player("p1", "Alice");
+		player.eliminatePlayer();
+		player.eliminatePlayer();
+		assertFalse(player.isActive());
+	}
 }

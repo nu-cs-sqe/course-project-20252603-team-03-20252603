@@ -116,3 +116,19 @@ cases:
 | setWasAttacked_WhenAlreadyTrue_RemainsTrue                | wasAttacked = true               | wasAttacked() = true     | :white_check_mark: |
 | resetWasAttacked_WhenTrue_SetsToFalse                    | wasAttacked = true               | wasAttacked() = false    | :white_check_mark: |
 | resetWasAttacked_WhenAlreadyFalse_RemainsAlreadyFalse    | wasAttacked = false              | wasAttacked() = false    | :white_check_mark: |
+
+
+
+### Method under test: `isActive()` / `eliminatePlayer()`
+spaces: isActive boolean = {true, false}
+
+cases:
+- initial state → isActive is true
+- after eliminatePlayer() → isActive is false
+- eliminatePlayer() when already false → isActive stays false (idempotent; no reactivation method exists)
+
+| test_Name                                              | State of the System              | Expected output        | Implemented?       |
+|--------------------------------------------------------|----------------------------------|------------------------|--------------------|
+| isActive_InitialState_ReturnsTrue                      | freshly constructed player       | isActive() = true      | :white_check_mark: |
+| eliminatePlayer_WhenActive_SetsToFalse                 | isActive = true                  | isActive() = false     | :white_check_mark: |
+| eliminatePlayer_WhenAlreadyEliminated_RemainsInactive  | isActive = false                 | isActive() = false     | :white_check_mark: |
