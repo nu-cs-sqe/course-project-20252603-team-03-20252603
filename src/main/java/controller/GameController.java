@@ -69,7 +69,17 @@ public class GameController {
 
 
 	boolean readyToPlayATurn() {
+		if (!gameState.isActive()) {
+			return false;
+		}
+
+		Player currentPlayer = gameState.getCurrentPlayer();
+		if (!currentPlayer.isActive()) {
+			return false;
+		}
+
 		return true;
+
 	}
 
 	boolean hasToPlayATurn() {
@@ -122,15 +132,6 @@ public class GameController {
 	void advanceGameToNextPlayer() {
 		gameState.advancePlayer();
 	}
-
-
-
-
-
-
-
-
-
 
 	public void playCard(List<Card> cards) {
 	}

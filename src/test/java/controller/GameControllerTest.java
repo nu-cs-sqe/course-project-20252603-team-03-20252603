@@ -383,4 +383,46 @@ public class GameControllerTest {
 
 		EasyMock.verify(mockGameState);
 	}
+
+	@Test
+	void readyToPlayATurn_gameStateNotActive_ReturnsFalse() {
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		EasyMock.expect(mockGameState.isActive()).andReturn(false);
+		EasyMock.replay(mockGameState);
+
+		GameController controller = createGameController(mockGameState);
+		assertFalse(controller.readyToPlayATurn());
+
+		EasyMock.verify(mockGameState);
+	}
+
+	@Test
+	void readyToPlayATurn_gameStateActiveCurrentPlayerNotActive_ReturnsFalse() {
+		Player mockPlayer = EasyMock.createMock(Player.class);
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		EasyMock.expect(mockGameState.isActive()).andReturn(true);
+		EasyMock.expect(mockGameState.getCurrentPlayer()).andReturn(mockPlayer);
+		EasyMock.expect(mockPlayer.isActive()).andReturn(false);
+		EasyMock.replay(mockGameState, mockPlayer);
+
+		GameController controller = createGameController(mockGameState);
+		assertFalse(controller.readyToPlayATurn());
+
+		EasyMock.verify(mockGameState, mockPlayer);
+	}
+
+	@Test
+	void readyToPlayATurn_gameStateActiveCurrentPlayerActive_ReturnsTrue() {
+		Player mockPlayer = EasyMock.createMock(Player.class);
+		GameState mockGameState = EasyMock.createMock(GameState.class);
+		EasyMock.expect(mockGameState.isActive()).andReturn(true);
+		EasyMock.expect(mockGameState.getCurrentPlayer()).andReturn(mockPlayer);
+		EasyMock.expect(mockPlayer.isActive()).andReturn(true);
+		EasyMock.replay(mockGameState, mockPlayer);
+
+		GameController controller = createGameController(mockGameState);
+		assertTrue(controller.readyToPlayATurn());
+
+		EasyMock.verify(mockGameState, mockPlayer);
+	}
 }

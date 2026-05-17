@@ -106,6 +106,23 @@ note: dirty state (isAttacking=true, skipDraw=true) set before each call to veri
 
 
 
+### Method under test: `readyToPlayATurn()`
+spaces: boolean (gameState.isActive()), boolean (currentPlayer.isActive())
+
+cases:
+- gameState.isActive() = false → return false (short-circuits; currentPlayer never checked)
+- gameState.isActive() = true, currentPlayer.isActive() = false → return false
+- gameState.isActive() = true, currentPlayer.isActive() = true → return true
+- currentPlayer.isActive() = false when gameState.isActive() = false (N/A — short-circuited)
+
+| test_Name                                                              | State of the System                                        | Expected output | Implemented?       |
+|------------------------------------------------------------------------|------------------------------------------------------------|-----------------|--------------------|
+| readyToPlayATurn_gameStateNotActive_ReturnsFalse                       | gameState.isActive()=false                                 | false           | :white_check_mark: |
+| readyToPlayATurn_gameStateActiveCurrentPlayerNotActive_ReturnsFalse    | gameState.isActive()=true, currentPlayer.isActive()=false  | false           | :white_check_mark: |
+| readyToPlayATurn_gameStateActiveCurrentPlayerActive_ReturnsTrue        | gameState.isActive()=true, currentPlayer.isActive()=true   | true            | :white_check_mark: |
+
+
+
 ### Method under test: `advanceGameToNextPlayer()`
 spaces: none (no parameters — method purely delegates to gameState.advancePlayer())
 
