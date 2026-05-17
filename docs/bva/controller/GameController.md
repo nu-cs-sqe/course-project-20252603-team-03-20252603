@@ -40,10 +40,10 @@ cases:
 - skipDraw is true
 - skipDraw is false
 
-| test_Name                                        | State of the System | Expected output    |    Implemented?    |
-|--------------------------------------------------|---------------------|--------------------|:------------------:|
+| test_Name                                        | State of the System | Expected output     |    Implemented?    |
+|--------------------------------------------------|---------------------|---------------------|:------------------:|
 | handleDrawingCards_skipDrawIsTrue_SkipsDraw      | skipDraw=true       | drawCard not called | :white_check_mark: |
-| handleDrawingCards_skipDrawIsFalse_DrawsCard     | skipDraw=false      | drawCard called     |        :x:         |
+| handleDrawingCards_skipDrawIsFalse_DrawsCard     | skipDraw=false      | drawCard called     | :white_check_mark: |
 
 
 
@@ -60,12 +60,26 @@ cases:
 - turnsRemaining = 3 (> 1, user-cited example)
 - turnsRemaining = INT_MAX (N/A — would overflow when added to DEFAULT_ATTACKING_TURNS)
 
-| test_Name                                                                            | State of the System                                                    | Expected output                                           | Implemented? |
-|--------------------------------------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------|:------------:|
-| handleTurnTaking_notAttacking_DecrementsAndReturnsOne                                | isAttacking=false, turnsRemaining (current player)=1                   | returns 1 for nextplayer, turnsRemaining decremented to 0 |     :x:      |
-| handleTurnTaking_attackingNotWasAttacked_DecrementsAndReturnsTwo                     | isAttacking=true, wasAttacked=false, turnsRemaining (current player)=1 | returns 2 for nextplayer, turnsRemaining decremented to 0 |     :x:      |
-| handleTurnTaking_attackingWasAttacked_turnsRemainingIsOne_DecrementsAndReturnsThree  | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=1  | returns 3 for nextplayer, turnsRemaining decremented to 0 |     :x:      |
-| handleTurnTaking_attackingWasAttacked_turnsRemainingIsTwo_DecrementsAndReturnsFour   | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=2  | returns 4 for nextplayer, turnsRemaining decremented to 1 |     :x:      |
-| handleTurnTaking_attackingWasAttacked_turnsRemainingIsThree_DecrementsAndReturnsFive | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=3  | returns 5 for nextplayer, turnsRemaining decremented to 2 |     :x:      |
-| handleTurnTaking_attackingWasAttacked_turnsRemainingIsFour_DecrementsAndReturnsSix   | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=4  | returns 6 for nextplayer, turnsRemaining decremented to 3 |     :x:      |
-| handleTurnTaking_notAttacking_turnsRemainingisThree_DecrementsAndReturnsOne          | isAttacking=false, turnsRemaining (current player)=3                   | returns 1 for nextplayer, turnsRemaining decremented to 2 |     :x:      |
+| test_Name                                                                            | State of the System                                                    | Expected output                                           |    Implemented?    |
+|--------------------------------------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------|:------------------:|
+| handleTurnTaking_notAttacking_DecrementsAndReturnsOne                                | isAttacking=false, turnsRemaining (current player)=1                   | returns 1 for nextplayer, turnsRemaining decremented to 0 | :white_check_mark: |
+| handleTurnTaking_attackingNotWasAttacked_DecrementsAndReturnsTwo                     | isAttacking=true, wasAttacked=false, turnsRemaining (current player)=1 | returns 2 for nextplayer, turnsRemaining decremented to 0 | :white_check_mark: |
+| handleTurnTaking_attackingWasAttacked_turnsRemainingIsOne_DecrementsAndReturnsThree  | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=1  | returns 3 for nextplayer, turnsRemaining decremented to 0 | :white_check_mark: |
+| handleTurnTaking_attackingWasAttacked_turnsRemainingIsTwo_DecrementsAndReturnsFour   | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=2  | returns 4 for nextplayer, turnsRemaining decremented to 1 | :white_check_mark: |
+| handleTurnTaking_attackingWasAttacked_turnsRemainingIsThree_DecrementsAndReturnsFive | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=3  | returns 5 for nextplayer, turnsRemaining decremented to 2 | :white_check_mark: |
+| handleTurnTaking_attackingWasAttacked_turnsRemainingIsFour_DecrementsAndReturnsSix   | isAttacking=true, wasAttacked=true, turnsRemaining (current player)=4  | returns 6 for nextplayer, turnsRemaining decremented to 3 | :white_check_mark: |
+| handleTurnTaking_notAttacking_turnsRemainingisThree_DecrementsAndReturnsOne          | isAttacking=false, turnsRemaining (current player)=3                   | returns 1 for nextplayer, turnsRemaining decremented to 2 | :white_check_mark: |
+
+
+
+### Method under test: `resetCurrentPlayerWasAttacked()`
+spaces: boolean 
+
+cases:
+- wasAttacked = false
+- wasAttacked = true
+- 
+| test_Name                                                     | State of the System | Expected output                                           |    Implemented?    |
+|---------------------------------------------------------------|---------------------|-----------------------------------------------------------|:------------------:|
+| resetCurrentPlayerWasAttacked_wasAttackedIsTrue_ResetToFalse  | wasAttacked = true  | reset wasAttacked to false for future rounds              | :white_check_mark: |
+| resetCurrentPlayerWasAttacked_wasAttackedIsFalse_ResetToFalse | wasAttacked = false | reset wasAttacked to false for future rounds              | :white_check_mark: |

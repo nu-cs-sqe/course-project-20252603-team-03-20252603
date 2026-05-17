@@ -280,4 +280,40 @@ public class GameControllerTest {
 		assertEquals(THREE_TURNS, turnState.turnsRemaining());
 		EasyMock.verify(mockGameState, mockPlayer);
 	}
+
+	@Test
+	void resetCurrentPlayerWasAttacked_wasAttackedIsTrue_ResetToFalse() {
+		TurnState mockTurnState = EasyMock.createMock(TurnState.class);
+		GameState mockGameState = createMockGameState(mockTurnState);
+
+		Player player = new Player("fakeId", "fakeName");
+		EasyMock.expect(mockGameState.getCurrentPlayer()).andReturn(player);
+
+		EasyMock.replay(mockGameState, mockTurnState);
+
+		player.setWasAttacked();
+
+		GameController controller = createGameController(mockGameState);
+		controller.resetCurrentPlayerWasAttacked();
+
+		assertFalse(player.wasAttacked());
+		EasyMock.verify(mockGameState);
+	}
+
+	@Test
+	void resetCurrentPlayerWasAttacked_wasAttackedIsFalse_ResetToFalse() {
+		TurnState mockTurnState = EasyMock.createMock(TurnState.class);
+		GameState mockGameState = createMockGameState(mockTurnState);
+
+		Player player = new Player("fakeId", "fakeName");
+		EasyMock.expect(mockGameState.getCurrentPlayer()).andReturn(player);
+
+		EasyMock.replay(mockGameState, mockTurnState);
+
+		GameController controller = createGameController(mockGameState);
+		controller.resetCurrentPlayerWasAttacked();
+
+		assertFalse(player.wasAttacked());
+		EasyMock.verify(mockGameState);
+	}
 }
