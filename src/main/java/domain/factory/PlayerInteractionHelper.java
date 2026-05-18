@@ -1,7 +1,7 @@
 package domain.factory;
 
 import domain.enums.CardType;
-import domain.input.IPlayerInput;
+import controller.IPlayerInput;
 import domain.model.Card;
 import domain.model.Player;
 
